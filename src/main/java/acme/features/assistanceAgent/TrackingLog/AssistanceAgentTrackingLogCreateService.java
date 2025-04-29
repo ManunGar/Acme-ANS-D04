@@ -1,0 +1,98 @@
+
+package acme.features.assistanceAgent.TrackingLog;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import acme.client.components.models.Dataset;
+import acme.client.components.views.SelectChoices;
+import acme.client.helpers.MomentHelper;
+import acme.client.services.AbstractGuiService;
+import acme.client.services.GuiService;
+import acme.entities.Claims.AcceptedIndicator;
+import acme.entities.Claims.Claim;
+import acme.entities.TrackingLogs.TrackingLog;
+import acme.realms.AssistanceAgent.AssistanceAgent;
+
+@GuiService
+public class AssistanceAgentTrackingLogCreateService extends AbstractGuiService<AssistanceAgent, TrackingLog> {
+
+	@Autowired
+	private AssistanceAgentTrackingLogRepository repository;
+
+
+	@Override
+	public void authorise() {
+		super.getResponse().setAuthorised(true);
+	}
+
+	@Override
+	public void load() {
+		TrackingLog trackingLog;
+
+		Integer claimId = super.getRequest().getData("masterId", int.class);
+		Claim claim = this.repository.findClaimById(claimId);
+
+		trackingLog = new TrackingLog();
+		trackingLog.setAccepted(AcceptedIndicator.PENDING);
+		trackingLog.setDraftMode(true);
+		trackingLog.setResolutionPercentage(0.);
+		trackingLog.setSecondTrackingLog(false);
+		trackingLog.setClaim(claim);
+
+		super.getBuffer().addData(trackingLog);
+
+	}
+
+	@Override
+	public void bind(final TrackingLog trackingLog) {
+
+		AcceptedIndicator accepted;
+		accepted = super.getRequest().getData("accepted", AcceptedIndicator.class);
+		accepted = accepted == null ? AcceptedIndicator.PENDING : accepted;
+
+		super.bindObject(trackingLog, "step", "resolutionPercentage", "resolution", "secondTrackingLog");
+		trackingLog.setAccepted(accepted);
+		trackingLog.setLastUpdateMoment(MomentHelper.getCurrentMoment());
+		trackingLog.setCreatedMoment(MomentHelper.getCurrentMoment());
+
+	}
+
+	@Override
+	public void validate(final TrackingLog trackingLog) {
+		if (trackingLog.getResolutionPercentage() == 100.00 && trackingLog.isSecondTrackingLog()) {
+
+			List<TrackingLog> trackingLogs = this.repository.findAllTrackingLogsByclaimId(super.getRequest().getData("masterId", int.class)).stream().filter(x -> x.getResolutionPercentage() == 100.00).filter(x -> x.isDraftMode() == false).toList();
+			if (trackingLogs.isEmpty())
+				super.state(false, "secondTrackingLog", "acme.validation.confirmation.message.trackingLog.condition");
+		}
+
+	}
+
+	@Override
+	public void perform(final TrackingLog trackingLog) {
+		trackingLog.setLastUpdateMoment(MomentHelper.getCurrentMoment());
+		trackingLog.setCreatedMoment(MomentHelper.getCurrentMoment());
+
+		this.repository.save(trackingLog);
+	}
+
+	@Override
+	public void unbind(final TrackingLog trackingLog) {
+		SelectChoices statusChoices;
+		Dataset dataset;
+
+		statusChoices = SelectChoices.from(AcceptedIndicator.class, trackingLog.getAccepted());
+
+		dataset = super.unbindObject(trackingLog, "step", "resolutionPercentage", "accepted", "resolution", "createdMoment", "secondTrackingLog");
+		dataset.put("claim", trackingLog.getClaim().getDescription());
+		dataset.put("status", statusChoices);
+		dataset.put("secondTrackingLogReadOnly", false);
+		dataset.put("masterId", super.getRequest().getData("masterId", int.class));
+
+		super.getResponse().addData(dataset);
+
+	}
+
+}

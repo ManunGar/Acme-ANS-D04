@@ -1,0 +1,31 @@
+technician.maintenance-record.form.title = Maintenance record details
+technician.maintenance-record.list.title = Listing of maintenance records
+
+technician.maintenance-record.form.label.maintenanceDate = Maintenance date:
+technician.maintenance-record.form.label.nextInspectionDueDate = Next inspection:
+technician.maintenance-record.form.label.status = Status:
+technician.maintenance-record.form.label.estimatedCost = Estimated cost:
+technician.maintenance-record.form.label.notes = Notes: (Optional)
+technician.maintenance-record.form.label.technician = Technician:
+technician.maintenance-record.form.label.aircraft = Aircraft:
+
+technician.maintenance-record.form.button.tasks = Record's tasks
+technician.maintenance-record.form.button.create = Create record
+technician.maintenance-record.form.button.update = Update record
+technician.maintenance-record.form.button.publish = Publish record
+technician.maintenance-record.form.button.delete = Delete record
+
+technician.maintenance-record.list.label.aircraft-model = Aircraft
+technician.maintenance-record.list.label.maintenanceDate = Maintenance date
+technician.maintenance-record.list.label.nextInspectionDueDate = Next inspection
+technician.maintenance-record.list.label.status = Status
+
+technician.maintenance-record.list.button.create = Create record
+
+technician.maintenance-record.create.status = The maintenance record can't be completed when created
+
+technician.maintenance-record.publish.status = The maintenance record must be completed
+technician.maintenance-record.publish.publishedTasks = The maintenance record has either no published tasks or some unpublished tasks
+
+acme.validation.length = Must be between 0 and 255
+

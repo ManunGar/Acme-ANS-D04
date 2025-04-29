@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <help_text/>
+  <zoom_level>8</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>232</x>
+      <y>64</y>
+      <w>528</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Role&gt;&gt;
+AssistanceAgent
+--
++ employeeCode: String {Mandatory, ValidIdentifier, Column(unique = true)}
++ spokenLanguages: String {Mandatory, ValidLongText, Automapped}
++ moment: Date {Mandatory, ValidMoment(past = true), Temporal(TemporalType.TIMESTAMP)}
++ briefBio: String {Optional, ValidLongText, Automapped}
++ salary: Money {Optional, ValidMoney, Automapped}
++ photo: String {Optional, ValidUrl, Automapped}
+bg=pink</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>32</x>
+      <y>304</y>
+      <w>544</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+Claim
+--
++ registrationMoment: Date {Mandatory, ValidMoment(past = true), Temporal(TemporalType.TIMESTAMP)}
++ passengerEmail: String {Mandatory, ValidEmail, Automapped}
++ description: String {Mandatory, ValidLongText, Automapped}
++ claimTypes: ClaimTypes {Mandatory, Valid, Automapped}
++ accepted: boolean {Mandatory, Automapped}
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>32</x>
+      <y>544</y>
+      <w>544</w>
+      <h>152</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+TrackingLog
+--
++ lastUpdateMoment: Date {Mandatory, ValidMoment(past = true), Temporal(TemporalType.TIMESTAMP)}
++ step: String {Mandatory, ValidShortText, Automapped}
++ resolutionPercentage: double {Mandatory, ValidScore, Automapped}
++ accepted: boolean {Mandatory, Automapped}
++ resolution: String {Optional, ValidLongText, Automapped}
+--
+\+ validResolution: boolean
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>728</x>
+      <y>304</y>
+      <w>112</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+Airline
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>824</x>
+      <y>72</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;ENUM&gt;&gt;
+ClaimType
+--
+FLIGHT_ISSUES
+LUGGAGE_ISSUES
+SECURITY_INCIDENT
+OTHER_ISSUES
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1048</x>
+      <y>72</y>
+      <w>168</w>
+      <h>104</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;ENUM&gt;&gt;
+AirlineType
+--
+LUXURY
+STANDARD
+LOW-COST
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>552</x>
+      <y>208</y>
+      <w>192</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=x-&gt;
+m1=*
+m2=1
+
+
+works for</panel_attributes>
+    <additional_attributes>10.0;10.0;220.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>296</x>
+      <y>448</y>
+      <w>56</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-x
+m1=1
+m2=*
+tracks</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>272</x>
+      <y>208</y>
+      <w>168</w>
+      <h>112</h>
+    </coordinates>
+    <panel_attributes>lt=x-&gt;
+m1=*
+m2=1
+
+
+registers</panel_attributes>
+    <additional_attributes>10.0;120.0;190.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>920</x>
+      <y>216</y>
+      <w>344</w>
+      <h>192</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Form&gt;&gt;
+AssistanceAgentDashboard
+--
++ ratioOfClaimsResolvedSuccesfully: Double
++ ratioOfClaimsRejected: Double
++ topThreeMonthsWithHighestNumberOfClaims: Double
++ averageDeviationOfLogsTheirClaimsHave: Double
++ minimumDeviationOfLogsTheirClaimsHave: Double
++ maximumDeviationOfLogsTheirClaimsHave: Double
++ standardDeviationOfLogsTheirClaimsHave: Double
++ averageNumberOfClaimsTheyAssistedTheLastMonth: Double
++ minimumNumberOfClaimsTheyAssistedTheLastMonth: Double
++ maximumNumberOfClaimsTheyAssistedTheLastMonth: Double
++ standardNumberOfClaimsTheyAssistedTheLastMonth: Double
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>920</x>
+      <y>520</y>
+      <w>344</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Constraint&gt;&gt;
+ValidTrackingLog
+--
++ resolution cannot be blank or null if resolutionPercentage == 100.
+bg=RED</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>920</x>
+      <y>424</y>
+      <w>344</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Constraint&gt;&gt;
+ValidClaim
+--
++ accepted of claim and its trackingLog must be the same if 
+resolutionPercentage of the trackingLog is 100.
+bg=RED</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>728</x>
+      <y>368</y>
+      <w>112</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Entity&gt;&gt;
+Legs
+bg=green</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>568</x>
+      <y>368</y>
+      <w>176</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>lt=x-&gt;
+m1=*
+m2=1
+
+
+request or complain</panel_attributes>
+    <additional_attributes>10.0;20.0;200.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>920</x>
+      <y>632</y>
+      <w>352</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Constraint&gt;&gt;
+ValidIdentifier
+--
++ NotBlank
++ Regexp = "^[A-Z]{2,3}\\d{6}$"
+bg=RED</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

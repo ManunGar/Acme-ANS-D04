@@ -1,0 +1,22 @@
+# messages-en.i18n
+#
+# Copyright (C) 2012-2025 Rafael Corchuelo.
+#
+# In keeping with the traditional purpose of furthering education and research, it is
+# the policy of the copyright owner to permit non-commercial use and redistribution of
+# this software. It has been tested carefully, but it is not guaranteed for any particular
+# purposes.  The copyright owner does not offer any warranties or representations, nor do
+# they accept any liabilities with respect to them.
+
+technician.maintenance-record-task.list.title = List of maintenance record related to tasks
+technician.maintenance-record-task.form.title = Create a maintenance record related to a task
+
+technician.maintenance-record-task.list.label.task = Task
+technician.maintenance-record-task.list.label.maintenance-record = Maintenance Record
+
+technician.maintenance-record-task.form.button.create = Relate task to a record
+
+
+acme.validation.confirmation.message.maintenance-record-task.create = That relation is already created
+acme.validation.confirmation.message.maintenance-record-task.create.maintenance-record = The maintenance record must not be null
+acme.validation.confirmation.message.maintenance-record-task.create.task = The task must not be null
