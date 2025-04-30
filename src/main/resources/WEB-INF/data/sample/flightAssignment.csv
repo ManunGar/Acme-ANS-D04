@@ -16,14 +16,12 @@ assignment-09,true,LEAD_ATTENDANT,2017/04/12 11:10,PENDING,Standby for additiona
 assignment-10,true,CO_PILOT,2016/03/05 09:00,CONFIRMED,L,crew-10,leg-20
 assignment-11,true,PILOT,2015/02/18 22:40,CANCELLED,Lo,crew-11,leg-21
 assignment-12,true,LEAD_ATTENDANT,2014/01/25 06:30,PENDING,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do: eiusmod tempor incididunt ut labore et dolore magna aliqua! Ut enim ad minim veniam? Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor",crew-12,leg-22
-assignment-13,true,CABIN_ATTENDANT,2013/12/10 17:55,CONFIRMED,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do: eiusmod tempor incididunt ut labore et dolore magna aliqua! Ut enim ad minim veniam? Quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor*",crew-13,leg-03
-assignment-14,true,PILOT,2012/11/08 12:30,CANCELLED,โลเร็ม อิปซัม,crew-14,leg-04
-assignment-15,true,CO_PILOT,2011/10/01 08:15,CONFIRMED,لوريم إيبسوم,crew-01,leg-21
-assignment-16,true,LEAD_ATTENDANT,2010/09/21 14:05,PENDING,洛伦·伊普森,crew-16,leg-01
-assignment-17,true,CABIN_ATTENDANT,2009/08/14 23:45,CANCELLED,<marquee>Hacked</marquee>,crew-17,leg-02
-assignment-18,true,PILOT,2008/07/30 05:20,CONFIRMED,<script>alert(‘Hacked!’);</script>,crew-10,leg-03
-assignment-19,true,CO_PILOT,2007/06/25 10:55,PENDING,'' or 'A' = 'A,crew-19,leg-04
-assignment-20,true,LEAD_ATTENDANT,2025/01/01 00:00,CANCELLED,Flight cancelled due to something.,crew-20,leg-20
+assignment-13,true,CO_PILOT,2011/10/01 08:15,CONFIRMED,لوريم إيبسوم,crew-01,leg-21
+assignment-14,true,LEAD_ATTENDANT,2010/09/21 14:05,PENDING,洛伦·伊普森,crew-16,leg-01
+assignment-15,true,CABIN_ATTENDANT,2009/08/14 23:45,CANCELLED,<marquee>Hacked</marquee>,crew-17,leg-02
+assignment-16,true,PILOT,2008/07/30 05:20,CONFIRMED,<script>alert(‘Hacked!’);</script>,crew-10,leg-03
+assignment-17,true,CO_PILOT,2007/06/25 10:55,PENDING,'' or 'A' = 'A,crew-19,leg-04
+assignment-18,true,LEAD_ATTENDANT,2025/01/01 00:00,CANCELLED,Flight cancelled due to something.,crew-20,leg-20
 #draftMode-test
-assignment-21,false,PILOT,2016/03/05 09:00,PENDING,Test assignment with draftMode = false.,crew-21,leg-21
-assignment-22,true,CABIN_ATTENDANT,2016/03/05 09:01,PENDING,Test assignment with draftMode = true.,crew-22,leg-22
+assignment-19,false,PILOT,2016/03/05 09:00,PENDING,Test assignment with draftMode = false.,crew-21,leg-21
+assignment-20,true,CABIN_ATTENDANT,2016/03/05 09:01,PENDING,Test assignment with draftMode = true.,crew-22,leg-22
