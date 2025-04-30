@@ -23,9 +23,9 @@ public interface AuthenticatedAssistanceAgentRepository extends AbstractReposito
 	@Query("select a from AssistanceAgent a where a.employeeCode = :employeeCode")
 	Customer findCustomerByIdentifier(String employeeCode);
 
-	@Query("selec ar from Airline ar where ar.id = :id")
+	@Query("select ar from Airline ar where ar.id = :id")
 	Airline findAirlineById(int id);
 
-	@Query("selec ar from Airline ar")
+	@Query("select ar from Airline ar")
 	List<Airline> findAllAirlines();
 }
