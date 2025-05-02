@@ -35,6 +35,8 @@ master.menu.assistanceAgent = assistanceAgent
 assistanceAgent.claim.list.button.list.resolved = List Claims resolved
 assistanceAgent.claim.list.button.list.notResolved = List Claims not resolved
 
+master.menu.claim = claims
+
 # master.menu.provider ########################################################
 
 master.menu.provider = Provider
@@ -69,6 +71,8 @@ master.menu.user-account.become-provider = Become a provider
 master.menu.user-account.provider-profile = Provider profile
 master.menu.user-account.become-consumer = Become a consumer
 master.menu.user-account.consumer-profile = Consumer profile
+master.menu.user-account.become-assistance-agent = Become an assistance agent
+master.menu.user-account.assistance-agent-profile = Assistance agent profile
 
 
 # master.menu.flight-crew-member ##########################################################

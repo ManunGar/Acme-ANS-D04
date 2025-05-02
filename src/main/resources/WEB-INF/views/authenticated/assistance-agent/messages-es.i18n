@@ -8,10 +8,13 @@
 # purposes.  The copyright owner does not offer any warranties or representations, nor do
 # they accept any liabilities with respect to them.
 
-authenticated.provider.form.title = Detalles de proveedor
+authenticated.assistance-agent.form.title = Formulario de agente de vuelo
 
-authenticated.provider.form.label.company = Compañía: 
-authenticated.provider.form.label.sector = Sector:
+authenticated.assistanceAgent.list.label.employeeCode = Codigo de empleado
+authenticated.assistanceAgent.list.label.spokenLanguages = Idiomas
+authenticated.assistanceAgent.list.label.briefBio = Breve descripcion
+authenticated.assistanceAgent.list.label.photo = Foto
+authenticated.assistanceAgent.list.label.airline = Aerolinea
 
-authenticated.provider.form.button.create = Registrar
-authenticated.provider.form.button.update = Actualizar
+authenticated.assistanceAgent.form.button.create = Convertirte en agente de vuelo
+authenticated.assistanceAgent.form.button.update = Actualizar datos de agente de vuelo

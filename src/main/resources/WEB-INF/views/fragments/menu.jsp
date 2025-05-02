@@ -57,7 +57,8 @@
 			<acme:menu-suboption code="master.menu.administrator.shut-system-down" action="/administrator/system/shut-down"/>
 		</acme:menu-option>
 		
-		<acme:menu-option code="master.menu.booking" access="hasRealm('Administrator')" action="/administrator/booking/list">
+		<acme:menu-option code="master.menu.booking" access="hasRealm('Administrator')" action="/administrator/booking/list"/>
+		<acme:menu-option code="master.menu.claim" access="hasRealm('Administrator')" action="/administrator/claim/list">
 		</acme:menu-option>
 		
 		<acme:menu-option code="master.menu.manager" access="hasRealm('AirlineManager')">
