@@ -38,7 +38,7 @@ public class CustomerBookingRecordCreateService extends AbstractGuiService<Custo
 
 		int customerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
 		Collection<Booking> bookings = this.bookingRepository.findBookingByCustomer(customerId);
-		Collection<Passenger> passengers = this.passengerRepository.findPassengerByCustomer(customerId).stream().filter(p -> p.isDraftMode() == false).toList();
+		Collection<Passenger> passengers = this.repository.findAllPublishedPassengersByCustomerId(customerId);
 		boolean isInBookings = true;
 		boolean isInPassengers = true;
 
@@ -106,8 +106,8 @@ public class CustomerBookingRecordCreateService extends AbstractGuiService<Custo
 		SelectChoices bookingChoices;
 
 		int customerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
-		Collection<Booking> bookings = this.bookingRepository.findBookingByCustomer(customerId).stream().filter(b -> b.isDraftMode() == true).toList();
-		Collection<Passenger> passengers = this.passengerRepository.findPassengerByCustomer(customerId).stream().filter(p -> p.isDraftMode() == false).toList();
+		Collection<Booking> bookings = this.repository.findAllDraftBookingsByCustomerId(customerId);
+		Collection<Passenger> passengers = this.repository.findAllPublishedPassengersByCustomerId(customerId);
 		bookingChoices = SelectChoices.from(bookings, "locatorCode", bookingRecord.getBooking());
 		passengerChoices = SelectChoices.from(passengers, "fullName", bookingRecord.getPassenger());
 
