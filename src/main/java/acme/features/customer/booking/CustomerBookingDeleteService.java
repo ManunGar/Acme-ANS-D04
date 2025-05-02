@@ -16,7 +16,6 @@ import acme.entities.Bookings.BookingRecord;
 import acme.entities.Bookings.TravelClass;
 import acme.entities.Flight.Flight;
 import acme.entities.Flight.FlightRepository;
-import acme.entities.Passengers.Passenger;
 import acme.features.customer.bookingRecord.CustomerBookingRecordRepository;
 import acme.realms.Customer;
 
@@ -86,11 +85,10 @@ public class CustomerBookingDeleteService extends AbstractGuiService<Customer, B
 		SelectChoices flightChoices;
 
 		Date today = MomentHelper.getCurrentMoment();
-		Collection<Flight> flights = this.flightRepository.findAllFlight().stream().filter(f -> f.getDraftMode() == false && this.flightRepository.findDepartureByFlightId(f.getId()).get(0).after(today)).toList();
+		Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
 		flightChoices = SelectChoices.from(flights, "Destination", booking.getFlight());
 		choices = SelectChoices.from(TravelClass.class, booking.getTravelClass());
-		Collection<Passenger> passengersNumber = this.repository.findPassengersByBooking(booking.getId());
-		Collection<String> passengers = passengersNumber.stream().map(x -> x.getFullName()).toList();
+		Collection<String> passengers = this.repository.findPassengersNameByBooking(booking.getId());
 
 		dataset = super.unbindObject(booking, "locatorCode", "purchaseMoment", "price", "lastNibble", "draftMode");
 		dataset.put("travelClass", choices);
