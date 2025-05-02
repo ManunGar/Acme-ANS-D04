@@ -14,12 +14,16 @@ import acme.realms.AssistanceAgent.AssistanceAgent;
 public class AuthenticatedAssistanceAgentController extends AbstractGuiController<Authenticated, AssistanceAgent> {
 
 	@Autowired
-	private AuthenticatedAssistanceAgentCreateService createService;
+	private AuthenticatedAssistanceAgentCreateService	createService;
+
+	@Autowired
+	private AuthenticatedAssistanceAgentUpdateService	updateService;
 
 
 	@PostConstruct
 	protected void initialise() {
 		super.addBasicCommand("create", this.createService);
+		super.addBasicCommand("update", this.updateService);
 	}
 
 }
