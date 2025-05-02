@@ -9,6 +9,7 @@ import acme.client.components.models.Dataset;
 import acme.client.components.principals.Authenticated;
 import acme.client.components.principals.UserAccount;
 import acme.client.components.views.SelectChoices;
+import acme.client.helpers.MomentHelper;
 import acme.client.helpers.PrincipalHelper;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
@@ -45,6 +46,7 @@ public class AuthenticatedAssistanceAgentCreateService extends AbstractGuiServic
 
 		object = new AssistanceAgent();
 		object.setUserAccount(userAccount);
+		object.setMoment(MomentHelper.getCurrentMoment());
 
 		super.getBuffer().addData(object);
 	}
@@ -55,7 +57,7 @@ public class AuthenticatedAssistanceAgentCreateService extends AbstractGuiServic
 		int airlineId;
 		Airline airline;
 
-		super.bindObject(object, "employeeCode", "spokenLanguages", "moment", "briefBio", "photo");
+		super.bindObject(object, "employeeCode", "spokenLanguages", "briefBio", "photo");
 		airlineId = super.getRequest().getData("airline", int.class);
 		airline = this.repository.findAirlineById(airlineId);
 		object.setAirline(airline);
@@ -69,6 +71,7 @@ public class AuthenticatedAssistanceAgentCreateService extends AbstractGuiServic
 
 	@Override
 	public void perform(final AssistanceAgent object) {
+		object.setMoment(MomentHelper.getCurrentMoment());
 		assert object != null;
 		this.repository.save(object);
 	}
@@ -82,7 +85,7 @@ public class AuthenticatedAssistanceAgentCreateService extends AbstractGuiServic
 		airlines = this.repository.findAllAirlines();
 		choices = SelectChoices.from(airlines, "IATAcode", object.getAirline());
 
-		dataset = super.unbindObject(object, "employeeCode", "spokenLanguages", "moment", "briefBio", "salary", "photo");
+		dataset = super.unbindObject(object, "employeeCode", "spokenLanguages", "briefBio", "photo");
 		dataset.put("airline", object.getAirline());
 		dataset.put("airlines", choices);
 
