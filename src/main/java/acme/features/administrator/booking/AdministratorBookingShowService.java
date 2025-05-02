@@ -2,19 +2,19 @@
 package acme.features.administrator.booking;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import acme.client.components.models.Dataset;
 import acme.client.components.principals.Administrator;
 import acme.client.components.views.SelectChoices;
+import acme.client.helpers.MomentHelper;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Bookings.Booking;
 import acme.entities.Bookings.TravelClass;
 import acme.entities.Flight.Flight;
-import acme.entities.Flight.FlightRepository;
-import acme.entities.Passengers.Passenger;
 import acme.features.customer.booking.CustomerBookingRepository;
 
 @GuiService
@@ -22,10 +22,7 @@ public class AdministratorBookingShowService extends AbstractGuiService<Administ
 	// Internal state ---------------------------------------------------------
 
 	@Autowired
-	private CustomerBookingRepository	repository;
-
-	@Autowired
-	private FlightRepository			flightRepository;
+	private CustomerBookingRepository repository;
 
 	// AbstractGuiService interface -------------------------------------------
 
@@ -53,18 +50,17 @@ public class AdministratorBookingShowService extends AbstractGuiService<Administ
 		SelectChoices choices;
 		SelectChoices flightChoices;
 
-		Collection<Flight> flights = this.flightRepository.findAllFlight().stream().filter(f -> f.getDraftMode() == false).toList();
+		Date today = MomentHelper.getCurrentMoment();
+		Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
 		flightChoices = SelectChoices.from(flights, "Destination", booking.getFlight());
 		choices = SelectChoices.from(TravelClass.class, booking.getTravelClass());
-		Collection<Passenger> passengersNumber = this.repository.findPassengersByBooking(booking.getId());
-		Collection<String> passengers = passengersNumber.stream().map(x -> x.getFullName()).toList();
+		Collection<String> passengers = this.repository.findPassengersNameByBooking(booking.getId());
 
-		dataset = super.unbindObject(booking, "locatorCode", "purchaseMoment", "price", "lastNibble");
+		dataset = super.unbindObject(booking, "locatorCode", "purchaseMoment", "price", "lastNibble", "draftMode");
 		dataset.put("travelClass", choices);
 		dataset.put("passengers", passengers);
 		dataset.put("flight", flightChoices.getSelected().getKey());
 		dataset.put("flights", flightChoices);
-		dataset.put("bookingId", booking.getId());
 
 		super.getResponse().addData(dataset);
 	}
