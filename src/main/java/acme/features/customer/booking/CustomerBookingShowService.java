@@ -14,7 +14,6 @@ import acme.client.services.GuiService;
 import acme.entities.Bookings.Booking;
 import acme.entities.Bookings.TravelClass;
 import acme.entities.Flight.Flight;
-import acme.entities.Flight.FlightRepository;
 import acme.realms.Customer;
 
 @GuiService
@@ -22,10 +21,7 @@ public class CustomerBookingShowService extends AbstractGuiService<Customer, Boo
 	// Internal state ---------------------------------------------------------
 
 	@Autowired
-	private CustomerBookingRepository	repository;
-
-	@Autowired
-	private FlightRepository			flightRepository;
+	private CustomerBookingRepository repository;
 
 	// AbstractGuiService interface -------------------------------------------
 
@@ -69,6 +65,7 @@ public class CustomerBookingShowService extends AbstractGuiService<Customer, Boo
 		dataset.put("passengers", passengers);
 		dataset.put("flight", flightChoices.getSelected().getKey());
 		dataset.put("flights", flightChoices);
+		dataset.put("bookingId", booking.getId());
 
 		super.getResponse().addData(dataset);
 	}
