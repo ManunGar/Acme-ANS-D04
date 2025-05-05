@@ -26,10 +26,9 @@
 			<acme:menu-suboption code="master.menu.anonymous.favourite-student5" action="https://www.mitele.es/directo/"/>
 		</acme:menu-option>
 		
-		<acme:menu-option code="master.menu.customer" access="hasRealm('Customer')" action="/customer/booking/list">
-		</acme:menu-option>
-		
-		<acme:menu-option code="master.menu.passenger" access="hasRealm('Customer')" action="/customer/passenger/list-menu">
+		<acme:menu-option code="master.menu.customer" access="hasRealm('Customer')">
+			<acme:menu-suboption code="master.menu.passenger" action="/customer/passenger/list-menu"/>
+			<acme:menu-suboption code="master.menu.booking" action="/customer/booking/list"/>
 		</acme:menu-option>
 		
 		<acme:menu-option code="master.menu.technician" access="hasRealm('Technician')" action="/technician/maintenance-record/list">
@@ -57,7 +56,7 @@
 			<acme:menu-suboption code="master.menu.administrator.shut-system-down" action="/administrator/system/shut-down"/>
 		</acme:menu-option>
 		
-		<acme:menu-option code="master.menu.booking" access="hasRealm('Administrator')" action="/administrator/booking/list">
+		<acme:menu-option code="master.menu.booking.published" access="hasRealm('Administrator')" action="/administrator/booking/list">
 		</acme:menu-option>
 		
 		<acme:menu-option code="master.menu.manager" access="hasRealm('AirlineManager')">
