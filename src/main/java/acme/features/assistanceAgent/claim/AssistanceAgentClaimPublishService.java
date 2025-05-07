@@ -92,12 +92,6 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 
 	@Override
 	public void perform(final Claim claim) {
-		Claim claimPersisted;
-
-		claimPersisted = this.repository.findClaimById(claim.getId());
-
-		claim.setRegistrationMoment(claimPersisted.getRegistrationMoment());
-
 		claim.setDraftMode(false);
 
 		this.repository.save(claim);

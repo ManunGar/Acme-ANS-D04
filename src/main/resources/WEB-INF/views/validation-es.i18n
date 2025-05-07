@@ -64,3 +64,5 @@ acme.validation.confirmation.message.passenger = La reserva debe tener al menos 
 acme.validation.confirmation.message.booking.locator-code.pattern = El código de localización debe coincidir con el patrón	
 
 acme.validation.text.identifier.duplicated = Ya existe otro comprador con ese identificador
+
+acme.validation.assistanceAgent.spokenLanguages.message = El formato del campo idiomas es: Español, Ingles, Aleman...
