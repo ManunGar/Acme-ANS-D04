@@ -22,20 +22,9 @@ public class AssistanceAgentTrackingLogPublishService extends AbstractGuiService
 
 	@Override
 	public void authorise() {
-		boolean status;
-		Claim claim;
-		int trackingLogId;
-		TrackingLog trackingLog;
-		AssistanceAgent assistanceAgent;
-
-		trackingLogId = super.getRequest().getData("id", int.class);
-		trackingLog = this.repository.findTrackingLogById(trackingLogId);
-
-		claim = this.repository.findClaimByTrackingLogId(trackingLogId);
-
-		assistanceAgent = claim == null ? null : claim.getAssistanceAgent();
-		status = super.getRequest().getPrincipal().hasRealm(assistanceAgent) && claim != null && !claim.isDraftMode() && trackingLog.isDraftMode();
-
+		int trackingLogId = super.getRequest().getData("id", int.class);
+		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
+		boolean status = this.repository.isPublishableTrackingLogOwnedByAgent(trackingLogId, agentId);
 		super.getResponse().setAuthorised(status);
 	}
 
@@ -69,12 +58,7 @@ public class AssistanceAgentTrackingLogPublishService extends AbstractGuiService
 
 	@Override
 	public void validate(final TrackingLog trackingLog) {
-
-		if (trackingLog.getClaim().isDraftMode() == true)
-			super.state(false, "draftMode", "acme.validation.confirmation.message.trackingLog.claim.notPublished");
-
-		if (!trackingLog.isDraftMode())
-			super.state(false, "*", "acme.validation.confirmation.message.trackingLog.draftMode");
+		;
 	}
 
 	@Override

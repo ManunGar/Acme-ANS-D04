@@ -1,8 +1,6 @@
 
 package acme.features.assistanceAgent.TrackingLog;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import acme.client.components.models.Dataset;
@@ -62,12 +60,10 @@ public class AssistanceAgentTrackingLogCreateService extends AbstractGuiService<
 	@Override
 	public void validate(final TrackingLog trackingLog) {
 		if (trackingLog.getResolutionPercentage() == 100.00 && trackingLog.isSecondTrackingLog()) {
-
-			List<TrackingLog> trackingLogs = this.repository.findAllTrackingLogsByclaimId(super.getRequest().getData("masterId", int.class)).stream().filter(x -> x.getResolutionPercentage() == 100.00).filter(x -> x.isDraftMode() == false).toList();
-			if (trackingLogs.isEmpty())
-				super.state(false, "secondTrackingLog", "acme.validation.confirmation.message.trackingLog.condition");
+			int claimId = super.getRequest().getData("masterId", int.class);
+			boolean hasAnotherCompleted = this.repository.existsPublishedFullResolutionTrackingLog(claimId);
+			super.state(hasAnotherCompleted, "secondTrackingLog", "acme.validation.confirmation.message.trackingLog.condition");
 		}
-
 	}
 
 	@Override
