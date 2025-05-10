@@ -38,4 +38,49 @@ public interface AssistanceAgentClaimRepository extends AbstractRepository {
 	@Query("select t from TrackingLog t where t.claim.id = :claimId")
 	Collection<TrackingLog> findTrackingLogsByClaimId(int claimId);
 
+	@Query("""
+			SELECT COUNT(c) > 0
+			FROM Claim c
+			WHERE c.id = :claimId
+			AND c.assistanceAgent.id = :agentId
+			AND c.draftMode = true
+		""")
+	boolean isDraftClaimOwnedByAgent(@Param("claimId") int claimId, @Param("agentId") int agentId);
+
+	@Query("""
+			SELECT COUNT(c) > 0
+			FROM Claim c
+			WHERE c.id = :claimId
+			AND c.assistanceAgent.id = :agentId
+		""")
+	boolean isClaimOwnedByAgent(@Param("claimId") int claimId, @Param("agentId") int agentId);
+
+	@Query("""
+			SELECT c
+			FROM Claim c
+			WHERE c.assistanceAgent.id = :agentId
+			AND NOT EXISTS (
+				SELECT t
+				FROM TrackingLog t
+				WHERE t.claim.id = c.id
+				AND t.draftMode = false
+				AND t.accepted <> acme.entities.Claims.AcceptedIndicator.PENDING
+			)
+		""")
+	Collection<Claim> findNotResolvedClaimsByAssistanceAgentId(@Param("agentId") int agentId);
+
+	@Query("""
+			SELECT c
+			FROM Claim c
+			WHERE c.assistanceAgent.id = :agentId
+			AND EXISTS (
+				SELECT t
+				FROM TrackingLog t
+				WHERE t.claim.id = c.id
+				AND t.draftMode = false
+				AND t.accepted <> acme.entities.Claims.AcceptedIndicator.PENDING
+			)
+		""")
+	Collection<Claim> findResolvedClaimsByAssistanceAgentId(@Param("agentId") int agentId);
+
 }

@@ -3,18 +3,38 @@ package acme.entities.Claims;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import acme.client.repositories.AbstractRepository;
-import acme.entities.TrackingLogs.TrackingLog;
 
 public interface ClaimRepository extends AbstractRepository {
 
-	@Query("SELECT t FROM TrackingLog t WHERE t.claim.id = :claimId order by t.resolutionPercentage desc,t.secondTrackingLog desc, t.createdMoment desc")
-	List<TrackingLog> findAllByClaimId(@Param("claimId") Integer claimId);
+	@Query("""
+		    SELECT t.secondTrackingLog
+		    FROM TrackingLog t
+		    WHERE t.claim.id = :claimId
+		    AND t.resolutionPercentage = 100.0
+		    AND t.id <> :excludeId
+		""")
+	List<Boolean> findOtherSecondTrackingStatus(int claimId, int excludeId);
 
-	@Query("SELECT t FROM TrackingLog t WHERE t.claim.id = :claimId AND t.draftMode = false order by t.resolutionPercentage desc,t.secondTrackingLog desc, t.createdMoment desc")
-	List<TrackingLog> findAllTrackingLogsPublishedByClaimId(@Param("claimId") Integer claimId);
+	@Query("""
+		    SELECT COUNT(t)
+		    FROM TrackingLog t
+		    WHERE t.claim.id = :claimId
+		    AND t.resolutionPercentage = 100.0
+		    AND t.id <> :excludeId
+		""")
+	int countOtherCompletedTrackingLogs(int claimId, int excludeId);
+
+	@Query("""
+		    SELECT t.accepted
+		    FROM TrackingLog t
+		    WHERE t.claim.id = :claimId AND t.draftMode = false
+		    ORDER BY t.resolutionPercentage DESC, t.secondTrackingLog DESC, t.createdMoment DESC
+		""")
+	List<AcceptedIndicator> findAcceptedIndicatorsByClaimId(@Param("claimId") Integer claimId, Pageable pageable);
 
 }
