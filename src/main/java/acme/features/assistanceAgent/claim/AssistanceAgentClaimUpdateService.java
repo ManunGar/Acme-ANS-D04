@@ -27,7 +27,19 @@ public class AssistanceAgentClaimUpdateService extends AbstractGuiService<Assist
 	public void authorise() {
 		int claimId = super.getRequest().getData("id", int.class);
 		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
+
 		boolean status = this.repository.isDraftClaimOwnedByAgent(claimId, agentId);
+
+		if (super.getRequest().hasData("leg", int.class)) {
+			int legId = super.getRequest().getData("leg", int.class);
+			Legs leg = this.repository.findLegById(legId);
+
+			if (leg != null) {
+				Collection<Legs> availableLegs = this.repository.findAvailableLegs(MomentHelper.getCurrentMoment());
+				status = status && availableLegs.contains(leg);
+			}
+		}
+
 		super.getResponse().setAuthorised(status);
 	}
 
