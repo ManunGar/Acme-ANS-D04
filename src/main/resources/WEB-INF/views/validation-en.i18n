@@ -57,6 +57,8 @@ acme.validation.text.identifier = The identifier is not correct
 
 acme.validation.assistanceAgent.employeeCode.message = The employeeCode must be unique
 
+acme.validation.assistanceAgent.spokenLanguages.message = The format of spokenLanguages is: Spanish, English, German...
+
 acme.validation.text.IATAcode = The IATAcode is not correct
 
 acme.validation.text.message.phone = The phone must have between 6-15 numbers

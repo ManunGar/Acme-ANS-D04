@@ -11,6 +11,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+
 import acme.client.components.basis.AbstractEntity;
 import acme.client.components.mappings.Automapped;
 import acme.client.components.validation.Mandatory;
@@ -20,7 +22,6 @@ import acme.client.helpers.SpringHelper;
 import acme.constraints.ValidClaim;
 import acme.constraints.ValidLongText;
 import acme.entities.Legs.Legs;
-import acme.entities.TrackingLogs.TrackingLog;
 import acme.realms.AssistanceAgent.AssistanceAgent;
 import lombok.Getter;
 import lombok.Setter;
@@ -72,15 +73,9 @@ public class Claim extends AbstractEntity {
 
 	@Transient
 	public AcceptedIndicator accepted() {
-		List<TrackingLog> trackingLogs;
-		AcceptedIndicator accepted;
-
 		ClaimRepository repository = SpringHelper.getBean(ClaimRepository.class);
-
-		trackingLogs = repository.findAllTrackingLogsPublishedByClaimId(this.getId());
-		accepted = trackingLogs.size() == 0 ? AcceptedIndicator.PENDING : trackingLogs.get(0).getAccepted();
-
-		return accepted;
+		List<AcceptedIndicator> indicators = repository.findAcceptedIndicatorsByClaimId(this.getId(), PageRequest.of(0, 1));
+		return indicators.isEmpty() ? AcceptedIndicator.PENDING : indicators.get(0);
 	}
 
 }

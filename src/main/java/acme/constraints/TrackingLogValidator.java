@@ -43,13 +43,16 @@ public class TrackingLogValidator extends AbstractValidator<ValidTrackingLog, Tr
 			super.state(context, false, "*", "acme.validation.NotNull.message");
 		else {
 
-			//Validation for attribute resolution when resolutionPercentage == 100.
+			// Validation for attribute resolution in relation to resolutionPercentage
 			{
-				boolean resolutionMandatory;
+				boolean resolutionValid;
 
-				resolutionMandatory = trackingLog.getResolutionPercentage() != 100.00 || trackingLog.validResolution();	//I can do it with == because i use double and not Double
+				if (trackingLog.getResolutionPercentage() == 100.00)
+					resolutionValid = trackingLog.validResolution();
+				else
+					resolutionValid = trackingLog.getResolution() == null || trackingLog.getResolution().trim().isEmpty();
 
-				super.state(context, resolutionMandatory, "resolution", "acme.validation.trackinLog.resolutionMandatory.message");
+				super.state(context, resolutionValid, "resolution", "acme.validation.trackinLog.resolutionMandatory.message");
 			}
 
 			//Validation for attribute accepted is logical with resolutionPercentage
@@ -67,9 +70,8 @@ public class TrackingLogValidator extends AbstractValidator<ValidTrackingLog, Tr
 			{
 				if (trackingLog.getClaim() != null) {
 					boolean maximumNumberOfTrackingLogsCompleted;
-					List<TrackingLog> trackingLogs = this.claimRepository.findAllByClaimId(trackingLog.getClaim().getId());
-					trackingLogs = trackingLogs.stream().filter(x -> x.getResolutionPercentage() == 100.00).filter(x -> x.getId() != trackingLog.getId()).toList();
-					maximumNumberOfTrackingLogsCompleted = trackingLog.getResolutionPercentage() != 100.00 ? true : trackingLogs.size() <= 1 ? true : false;
+					int completedCount = this.claimRepository.countOtherCompletedTrackingLogs(trackingLog.getClaim().getId(), trackingLog.getId());
+					maximumNumberOfTrackingLogsCompleted = trackingLog.getResolutionPercentage() != 100.00 || completedCount <= 1;
 
 					super.state(context, maximumNumberOfTrackingLogsCompleted, "claim", "acme.validation.trackingLog.numberOfTrackingLogsCompleted.message");
 				}
@@ -123,14 +125,19 @@ public class TrackingLogValidator extends AbstractValidator<ValidTrackingLog, Tr
 
 			{
 				if (trackingLog.getClaim() != null) {
-					boolean attributeSecondTrackingLog;
+					List<Boolean> otherSecondStatuses = this.claimRepository.findOtherSecondTrackingStatus(trackingLog.getClaim().getId(), trackingLog.getId());
 
-					List<TrackingLog> trackingLogs = this.claimRepository.findAllByClaimId(trackingLog.getClaim().getId());
-					trackingLogs = trackingLogs.stream().filter(x -> x.getResolutionPercentage() == 100.00).filter(x -> x.getId() != trackingLog.getId()).toList();
-					attributeSecondTrackingLog = trackingLog.getResolutionPercentage() != 100.00 ? true
-						: trackingLogs.size() != 1 ? !trackingLog.isSecondTrackingLog() : trackingLogs.get(0).isSecondTrackingLog() ^ trackingLog.isSecondTrackingLog() ? true : false;
+					boolean attributeSecondTrackingLog = true;
+
+					if (trackingLog.getResolutionPercentage() == 100.00)
+						if (otherSecondStatuses.size() == 1) {
+							boolean other = otherSecondStatuses.get(0);
+							attributeSecondTrackingLog = other ^ trackingLog.isSecondTrackingLog();
+						} else
+							attributeSecondTrackingLog = !trackingLog.isSecondTrackingLog();
 
 					super.state(context, attributeSecondTrackingLog, "secondTrackingLog", "acme.validation.trackingLog.secondTrackingLog.numberOfTrackingLogs.message");
+
 				}
 
 			}

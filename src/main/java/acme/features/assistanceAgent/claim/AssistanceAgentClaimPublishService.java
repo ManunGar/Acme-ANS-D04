@@ -25,15 +25,20 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 
 	@Override
 	public void authorise() {
-		boolean status;
-		int claimId;
-		Claim claim;
-		AssistanceAgent assistanceAgent;
+		int claimId = super.getRequest().getData("id", int.class);
+		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
 
-		claimId = super.getRequest().getData("id", int.class);
-		claim = this.repository.findClaimById(claimId);
-		assistanceAgent = claim == null ? null : claim.getAssistanceAgent();
-		status = super.getRequest().getPrincipal().hasRealm(assistanceAgent) && claim != null && claim.isDraftMode();
+		boolean status = this.repository.isDraftClaimOwnedByAgent(claimId, agentId);
+
+		if (super.getRequest().hasData("leg", int.class)) {
+			int legId = super.getRequest().getData("leg", int.class);
+			Legs leg = this.repository.findLegById(legId);
+
+			if (leg != null) {
+				Collection<Legs> availableLegs = this.repository.findAvailableLegs(MomentHelper.getCurrentMoment());
+				status = status && availableLegs.contains(leg);
+			}
+		}
 
 		super.getResponse().setAuthorised(status);
 	}
@@ -92,12 +97,6 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 
 	@Override
 	public void perform(final Claim claim) {
-		Claim claimPersisted;
-
-		claimPersisted = this.repository.findClaimById(claim.getId());
-
-		claim.setRegistrationMoment(claimPersisted.getRegistrationMoment());
-
 		claim.setDraftMode(false);
 
 		this.repository.save(claim);

@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import acme.client.components.models.Dataset;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
-import acme.entities.Claims.AcceptedIndicator;
 import acme.entities.Claims.Claim;
 import acme.realms.AssistanceAgent.AssistanceAgent;
 
@@ -26,12 +25,8 @@ public class AssistanceAgentClaimListNotResolvedService extends AbstractGuiServi
 
 	@Override
 	public void load() {
-		Collection<Claim> claims;
-		int assistanceAgentId;
-
-		assistanceAgentId = super.getRequest().getPrincipal().getActiveRealm().getId();
-		claims = this.repository.findClaimsByAssistanceAgentId(assistanceAgentId);
-		claims = claims.stream().filter(x -> x.accepted().equals(AcceptedIndicator.PENDING)).toList();
+		int assistanceAgentId = super.getRequest().getPrincipal().getActiveRealm().getId();
+		Collection<Claim> claims = this.repository.findNotResolvedClaimsByAssistanceAgentId(assistanceAgentId);
 
 		super.getBuffer().addData(claims);
 	}

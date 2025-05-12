@@ -1,15 +1,13 @@
 
 package acme.realms.AssistanceAgent;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.Query;
 
 import acme.client.repositories.AbstractRepository;
 
 public interface AssistanceAgentRepository extends AbstractRepository {
 
-	@Query("SELECT a FROM AssistanceAgent a")
-	List<AssistanceAgent> findAllAssistanceAgent();
+	@Query("SELECT COUNT(a) > 0 FROM AssistanceAgent a WHERE a.employeeCode = :employeeCode AND a.id <> :id")
+	boolean existsOtherWithEmployeeCode(String employeeCode, int id);
 
 }

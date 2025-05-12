@@ -1,32 +1,38 @@
 
-package acme.features.assistanceAgent.claim;
+package acme.features.administrator.claim;
 
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import acme.client.components.models.Dataset;
+import acme.client.components.principals.Administrator;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Claims.Claim;
-import acme.realms.AssistanceAgent.AssistanceAgent;
 
 @GuiService
-public class AssistanceAgentClaimListResolvedService extends AbstractGuiService<AssistanceAgent, Claim> {
+public class AdministratorClaimListService extends AbstractGuiService<Administrator, Claim> {
 
 	@Autowired
-	private AssistanceAgentClaimRepository repository;
+	private AdministratorClaimRepository repository;
 
 
 	@Override
 	public void authorise() {
-		super.getResponse().setAuthorised(true);
+
+		boolean status;
+
+		status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
+
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
 	public void load() {
-		int assistanceAgentId = super.getRequest().getPrincipal().getActiveRealm().getId();
-		Collection<Claim> claims = this.repository.findResolvedClaimsByAssistanceAgentId(assistanceAgentId);
+		Collection<Claim> claims;
+
+		claims = this.repository.findClaimsPublished();
 
 		super.getBuffer().addData(claims);
 	}

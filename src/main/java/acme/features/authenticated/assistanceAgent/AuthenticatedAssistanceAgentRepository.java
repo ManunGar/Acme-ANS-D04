@@ -10,6 +10,7 @@ import acme.client.components.principals.UserAccount;
 import acme.client.repositories.AbstractRepository;
 import acme.entities.Airlines.Airline;
 import acme.realms.Customer;
+import acme.realms.AssistanceAgent.AssistanceAgent;
 
 @Repository
 public interface AuthenticatedAssistanceAgentRepository extends AbstractRepository {
@@ -28,4 +29,7 @@ public interface AuthenticatedAssistanceAgentRepository extends AbstractReposito
 
 	@Query("select ar from Airline ar")
 	List<Airline> findAllAirlines();
+
+	@Query("select a from AssistanceAgent a where a.userAccount.id = :id")
+	AssistanceAgent findOneAssistanceAgentByUserAccountId(int id);
 }

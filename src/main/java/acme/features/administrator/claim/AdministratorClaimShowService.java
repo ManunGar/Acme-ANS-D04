@@ -1,5 +1,5 @@
 /*
- * AssistanceAgentTrackingLogShowService.java
+ * AdministratorTrackingLogShowService.java
  *
  * Copyright (C) 2012-2025 Rafael Corchuelo.
  *
@@ -10,39 +10,38 @@
  * they accept any liabilities with respect to them.
  */
 
-package acme.features.assistanceAgent.claim;
-
-import java.util.Collection;
+package acme.features.administrator.claim;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import acme.client.components.models.Dataset;
-import acme.client.components.views.SelectChoices;
-import acme.client.helpers.MomentHelper;
+import acme.client.components.principals.Administrator;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Claims.AcceptedIndicator;
 import acme.entities.Claims.Claim;
-import acme.entities.Claims.ClaimTypes;
 import acme.entities.Legs.Legs;
-import acme.realms.AssistanceAgent.AssistanceAgent;
 
 @GuiService
-public class AssistanceAgentClaimShowService extends AbstractGuiService<AssistanceAgent, Claim> {
+public class AdministratorClaimShowService extends AbstractGuiService<Administrator, Claim> {
 
 	// Internal state ---------------------------------------------------------
 
 	@Autowired
-	private AssistanceAgentClaimRepository repository;
+	private AdministratorClaimRepository repository;
 
 	// AbstractGuiService interface -------------------------------------------
 
 
 	@Override
 	public void authorise() {
-		int claimId = super.getRequest().getData("id", int.class);
-		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
-		boolean status = this.repository.isClaimOwnedByAgent(claimId, agentId);
+		int claimId;
+		Claim claim;
+
+		claimId = super.getRequest().getData("id", int.class);
+		claim = this.repository.findClaimById(claimId);
+
+		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class) && !claim.isDraftMode();
 		super.getResponse().setAuthorised(status);
 	}
 
@@ -62,26 +61,15 @@ public class AssistanceAgentClaimShowService extends AbstractGuiService<Assistan
 
 	@Override
 	public void unbind(final Claim claim) {
-		Collection<Legs> legs;
-		SelectChoices typesChoices;
-		SelectChoices legsChoices;
 		Dataset dataset;
 		boolean undergoing;
 
 		undergoing = claim.accepted().equals(AcceptedIndicator.PENDING);
 
-		legs = this.repository.findAvailableLegs(MomentHelper.getCurrentMoment());
-		legsChoices = SelectChoices.from(legs, "flightNumber", claim.getLeg());
-
-		typesChoices = SelectChoices.from(ClaimTypes.class, claim.getClaimType());
-
 		dataset = super.unbindObject(claim, "registrationMoment", "passengerEmail", "description", "claimType");
 
 		dataset.put("accepted", claim.accepted());
 		dataset.put("leg", claim.getLeg());
-		dataset.put("legs", legsChoices);
-		dataset.put("claimTypes", typesChoices);
-		dataset.put("draftMode", claim.isDraftMode());
 		dataset.put("undergoing", undergoing);
 		//Related to leg:
 		dataset.put("departure", claim.getLeg().getDeparture());
