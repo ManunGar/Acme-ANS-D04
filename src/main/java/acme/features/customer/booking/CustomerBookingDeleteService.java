@@ -20,7 +20,7 @@ import acme.realms.Customer;
 
 @GuiService
 public class CustomerBookingDeleteService extends AbstractGuiService<Customer, Booking> {
-	// Internal state ---------------------------------------------------------
+	// Internal state --------------------------------------------------------
 
 	@Autowired
 	private CustomerBookingRepository		repository;
@@ -28,7 +28,7 @@ public class CustomerBookingDeleteService extends AbstractGuiService<Customer, B
 	@Autowired
 	private CustomerBookingRecordRepository	bookingRecordrepository;
 
-	// AbstractGuiService interfaced ------------------------------------------
+	// AbstractGuiService interfaced -----------------------------------------
 
 
 	@Override
