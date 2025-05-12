@@ -17,24 +17,17 @@ public class CustomerPassengerListService extends AbstractGuiService<Customer, P
 	// Internal state ---------------------------------------------------------
 
 	@Autowired
-	private CustomerBookingRepository	bookingRepository;
-
-	@Autowired
-	private CustomerPassengerRepository	repository;
+	private CustomerBookingRepository bookingRepository;
 
 	// AbstractGuiService interface -------------------------------------------
 
 
 	@Override
 	public void authorise() {
-		boolean status;
-		int customerId;
-		Collection<Passenger> passengers;
+		boolean isCustomer;
 
-		customerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
-		passengers = this.repository.findPassengerByCustomer(customerId);
-		status = passengers.stream().allMatch(b -> b.getCustomer().getUserAccount().getId() == customerId) && super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
-		super.getResponse().setAuthorised(status);
+		isCustomer = super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
+		super.getResponse().setAuthorised(isCustomer);
 	}
 
 	@Override

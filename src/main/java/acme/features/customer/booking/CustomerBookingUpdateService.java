@@ -34,23 +34,29 @@ public class CustomerBookingUpdateService extends AbstractGuiService<Customer, B
 	public void authorise() {
 		int id;
 		Booking booking;
+		boolean isFlightInList = true;
+		boolean status = true;
+		boolean isCustomer = super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
 		int customerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
-
 		id = super.getRequest().getData("id", int.class);
 		booking = this.repository.findBookingById(id);
-		boolean status = booking.getCustomer().getUserAccount().getId() == customerId && super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
+		status = booking.getCustomer().getUserAccount().getId() == customerId;
 
-		Date today = MomentHelper.getCurrentMoment();
-		int flightId = super.getRequest().getData("flight", int.class);
-		Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
-		Flight flight;
-		boolean isFlightInList = true;
-		if (flightId != 0) {
-			flight = this.flightRepository.findFlightById(flightId);
-			isFlightInList = flights.contains(flight);
+		if (booking.isDraftMode() != false && status && isCustomer) {
+
+			Date today = MomentHelper.getCurrentMoment();
+			Integer flightId = super.getRequest().getData("flight", int.class);
+			Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
+			Flight flight;
+
+			if (flightId != 0) {
+				flight = this.flightRepository.findFlightById(flightId);
+				isFlightInList = flights.contains(flight);
+			}
+
 		}
 
-		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList);
+		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList && isCustomer);
 	}
 
 	@Override
@@ -72,8 +78,7 @@ public class CustomerBookingUpdateService extends AbstractGuiService<Customer, B
 
 	@Override
 	public void validate(final Booking booking) {
-		if (booking.isDraftMode() == false)
-			super.state(false, "draftMode", "acme.validation.confirmation.message.update");
+		;
 
 	}
 

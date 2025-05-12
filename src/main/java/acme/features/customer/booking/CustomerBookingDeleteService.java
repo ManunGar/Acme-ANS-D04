@@ -15,13 +15,12 @@ import acme.entities.Bookings.Booking;
 import acme.entities.Bookings.BookingRecord;
 import acme.entities.Bookings.TravelClass;
 import acme.entities.Flight.Flight;
-import acme.entities.Flight.FlightRepository;
 import acme.features.customer.bookingRecord.CustomerBookingRecordRepository;
 import acme.realms.Customer;
 
 @GuiService
 public class CustomerBookingDeleteService extends AbstractGuiService<Customer, Booking> {
-	// Internal state ---------------------------------------------------------
+	// Internal state --------------------------------------------------------
 
 	@Autowired
 	private CustomerBookingRepository		repository;
@@ -29,10 +28,7 @@ public class CustomerBookingDeleteService extends AbstractGuiService<Customer, B
 	@Autowired
 	private CustomerBookingRecordRepository	bookingRecordrepository;
 
-	@Autowired
-	private FlightRepository				flightRepository;
-
-	// AbstractGuiService interfaced ------------------------------------------
+	// AbstractGuiService interfaced -----------------------------------------
 
 
 	@Override
@@ -43,8 +39,10 @@ public class CustomerBookingDeleteService extends AbstractGuiService<Customer, B
 
 		id = super.getRequest().getData("id", int.class);
 		booking = this.repository.findBookingById(id);
-		boolean status = booking.getCustomer().getUserAccount().getId() == customerId && super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
-		super.getResponse().setAuthorised(status);
+		boolean isCustomer = super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
+		boolean status = booking.getCustomer().getUserAccount().getId() == customerId;
+
+		super.getResponse().setAuthorised(status && booking.isDraftMode() && isCustomer);
 	}
 
 	@Override
@@ -66,8 +64,7 @@ public class CustomerBookingDeleteService extends AbstractGuiService<Customer, B
 
 	@Override
 	public void validate(final Booking booking) {
-		if (booking.isDraftMode() == false)
-			super.state(false, "draftMode", "acme.validation.confirmation.message.update");
+		;
 
 	}
 

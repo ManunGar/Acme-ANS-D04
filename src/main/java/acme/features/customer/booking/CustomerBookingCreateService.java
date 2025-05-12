@@ -48,6 +48,7 @@ public class CustomerBookingCreateService extends AbstractGuiService<Customer, B
 				isFlightInList = flights.contains(flight);
 
 			}
+
 		}
 		super.getResponse().setAuthorised(isCustomer && isFlightInList);
 	}
