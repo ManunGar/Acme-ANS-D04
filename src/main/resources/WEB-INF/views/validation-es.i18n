@@ -33,7 +33,7 @@ acme.validation.trackingLog.numberOfTrackingLogsCompleted.message = Una claim so
 
 acme.validation.trackingLog.resolutionPercentage.message = El atributo resolutionPercentage no puede ser mas bajo
 
-acme.validation.trackingLog.draftModeLogical.message = El atributo draftMode de un trackingLog solo puede ser true si el atributo draftMode de su claim asociada es true tambien
+acme.validation.trackingLog.draftModeLogical.message = El atributo draftMode de un trackingLog solo puede ser false si el atributo draftMode de su claim asociada es false tambien
 
 acme.validation.trackingLog.secondTrackingLog.numberOfTrackingLogs.message = Solo cuando tienes 2 trackingLogs resueltas, alguna de estas 2 debería ser creada luego de que el cliente muestre una disatisfacción.
 

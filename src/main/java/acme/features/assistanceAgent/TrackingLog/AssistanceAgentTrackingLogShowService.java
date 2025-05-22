@@ -46,7 +46,7 @@ public class AssistanceAgentTrackingLogShowService extends AbstractGuiService<As
 		claim = this.repository.findClaimByTrackingLogId(trackingLogId);
 
 		assistanceAgent = claim == null ? null : claim.getAssistanceAgent();
-		status = super.getRequest().getPrincipal().hasRealm(assistanceAgent) && claim != null;
+		status = super.getRequest().getPrincipal().hasRealm(assistanceAgent);
 
 		super.getResponse().setAuthorised(status);
 	}

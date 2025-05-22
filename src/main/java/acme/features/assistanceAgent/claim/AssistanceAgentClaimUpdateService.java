@@ -32,9 +32,9 @@ public class AssistanceAgentClaimUpdateService extends AbstractGuiService<Assist
 
 		if (super.getRequest().hasData("leg", int.class)) {
 			int legId = super.getRequest().getData("leg", int.class);
-			Legs leg = this.repository.findLegById(legId);
 
-			if (leg != null) {
+			if (legId != 0) {
+				Legs leg = this.repository.findLegById(legId);
 				Collection<Legs> availableLegs = this.repository.findAvailableLegs(MomentHelper.getCurrentMoment());
 				status = status && availableLegs.contains(leg);
 			}
@@ -64,12 +64,8 @@ public class AssistanceAgentClaimUpdateService extends AbstractGuiService<Assist
 		int legId;
 		Legs leg;
 
-		if (claim.accepted() != AcceptedIndicator.PENDING)
-			leg = this.repository.findLegByClaimId(claim.getId());
-		else {
-			legId = super.getRequest().getData("leg", int.class);
-			leg = this.repository.findLegById(legId);
-		}
+		legId = super.getRequest().getData("leg", int.class);
+		leg = this.repository.findLegById(legId);
 
 		super.bindObject(claim, "passengerEmail", "description", "claimType");
 		claim.setLeg(leg);
@@ -81,12 +77,8 @@ public class AssistanceAgentClaimUpdateService extends AbstractGuiService<Assist
 		int legId;
 		Legs leg;
 
-		if (claim.accepted() != AcceptedIndicator.PENDING)
-			leg = this.repository.findLegByClaimId(claim.getId());
-		else {
-			legId = super.getRequest().getData("leg", int.class);
-			leg = this.repository.findLegById(legId);
-		}
+		legId = super.getRequest().getData("leg", int.class);
+		leg = this.repository.findLegById(legId);
 
 		if (leg == null)
 			super.state(false, "leg", "acme.validation.confirmation.message.claim.leg");
@@ -127,9 +119,11 @@ public class AssistanceAgentClaimUpdateService extends AbstractGuiService<Assist
 		dataset.put("draftMode", claim.isDraftMode());
 		dataset.put("undergoing", undergoing);
 		//Related to leg:
-		dataset.put("departure", claim.getLeg().getDeparture());
-		dataset.put("arrival", claim.getLeg().getArrival());
-		dataset.put("status", claim.getLeg().getStatus());
+		if (claim.getLeg() != null) {
+			dataset.put("departure", claim.getLeg().getDeparture());
+			dataset.put("arrival", claim.getLeg().getArrival());
+			dataset.put("status", claim.getLeg().getStatus());
+		}
 
 		super.getResponse().addData(dataset);
 	}

@@ -60,7 +60,6 @@ public class AssistanceAgentTrackingLogUpdateService extends AbstractGuiService<
 	public void validate(final TrackingLog trackingLog) {
 		AcceptedIndicator accepted;
 		accepted = super.getRequest().getData("accepted", AcceptedIndicator.class);
-		accepted = accepted == null ? AcceptedIndicator.PENDING : accepted;
 		if (accepted == null)
 			super.state(false, "accepted", "acme.validation.claim.trackingLog.accepted");
 	}
