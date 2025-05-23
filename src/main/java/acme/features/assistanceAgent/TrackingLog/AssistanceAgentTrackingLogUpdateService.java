@@ -10,6 +10,7 @@ import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Claims.AcceptedIndicator;
 import acme.entities.Claims.Claim;
+import acme.entities.Claims.ClaimTypes;
 import acme.entities.TrackingLogs.TrackingLog;
 import acme.realms.AssistanceAgent.AssistanceAgent;
 
@@ -25,6 +26,18 @@ public class AssistanceAgentTrackingLogUpdateService extends AbstractGuiService<
 		int trackingLogId = super.getRequest().getData("id", int.class);
 		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
 		boolean status = this.repository.isDraftTrackingLogOwnedByAgent(trackingLogId, agentId);
+
+		if (super.getRequest().hasData("accepted", String.class)) {
+			String accepted = super.getRequest().getData("accepted", String.class);
+
+			if (!"0".equals(accepted))
+				try {
+					ClaimTypes.valueOf(accepted);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = false;
+				}
+		}
+
 		super.getResponse().setAuthorised(status);
 	}
 
