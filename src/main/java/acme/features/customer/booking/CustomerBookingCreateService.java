@@ -34,6 +34,7 @@ public class CustomerBookingCreateService extends AbstractGuiService<Customer, B
 	@Override
 	public void authorise() {
 		boolean isCustomer = super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
+		boolean travelClass = true;
 
 		Date today = MomentHelper.getCurrentMoment();
 		boolean isFlightInList = true;
@@ -50,7 +51,18 @@ public class CustomerBookingCreateService extends AbstractGuiService<Customer, B
 			}
 
 		}
-		super.getResponse().setAuthorised(isCustomer && isFlightInList);
+
+		if (super.getRequest().hasData("travelClass", String.class)) {
+			String travelClassData = super.getRequest().getData("travelClass", String.class);
+			if (!"0".equals(travelClassData))
+				try {
+					TravelClass.valueOf(travelClassData);
+				} catch (IllegalArgumentException e) {
+					travelClass = false;
+				}
+		}
+
+		super.getResponse().setAuthorised(isCustomer && isFlightInList && travelClass);
 	}
 
 	@Override

@@ -41,6 +41,7 @@ public class CustomerBookingPublishService extends AbstractGuiService<Customer, 
 		Booking booking;
 		boolean isFlightInList = true;
 		boolean status = true;
+		boolean travelClass = true;
 		boolean isCustomer = super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
 		int customerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
 		id = super.getRequest().getData("id", int.class);
@@ -61,7 +62,17 @@ public class CustomerBookingPublishService extends AbstractGuiService<Customer, 
 
 		}
 
-		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList && isCustomer);
+		if (super.getRequest().hasData("travelClass", String.class)) {
+			String travelClassData = super.getRequest().getData("travelClass", String.class);
+			if (!"0".equals(travelClassData))
+				try {
+					TravelClass.valueOf(travelClassData);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					travelClass = false;
+				}
+		}
+
+		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList && isCustomer && travelClass);
 	}
 
 	@Override
