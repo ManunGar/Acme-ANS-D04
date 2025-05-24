@@ -26,8 +26,18 @@ public class AdministratorAircraftDisableService extends AbstractGuiService<Admi
 
 	@Override
 	public void authorise() {
-		boolean isAdministrator = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
-		super.getResponse().setAuthorised(isAdministrator);
+		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
+
+		Collection<Integer> aircraftsId = this.repository.findAllAircraftId();
+
+		if (super.getRequest().hasData("id", int.class)) {
+			Integer aircraftId = super.getRequest().getData("id", int.class);
+
+			if (!"0".equals(aircraftId))
+				status = status && aircraftsId.contains(aircraftId);
+		}
+
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
@@ -89,6 +99,7 @@ public class AdministratorAircraftDisableService extends AbstractGuiService<Admi
 		dataset.put("confirmation", false);
 		dataset.put("airlines", airlineChoices);
 		dataset.put("airline", airlineChoices.getSelected().getKey());
+		dataset.put("readOnlyStatus", true);
 
 		super.getResponse().addData(dataset);
 	}
