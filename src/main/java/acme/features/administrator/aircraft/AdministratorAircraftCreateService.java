@@ -13,6 +13,7 @@ import acme.client.services.GuiService;
 import acme.entities.Aircrafts.Aircraft;
 import acme.entities.Aircrafts.AircraftStatus;
 import acme.entities.Airlines.Airline;
+import acme.entities.Airports.OperationalScope;
 
 @GuiService
 public class AdministratorAircraftCreateService extends AbstractGuiService<Administrator, Aircraft> {
@@ -27,8 +28,29 @@ public class AdministratorAircraftCreateService extends AbstractGuiService<Admin
 
 	@Override
 	public void authorise() {
-		boolean isAdministrator = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
-		super.getResponse().setAuthorised(isAdministrator);
+		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
+
+		Collection<Integer> aircraftsId = this.repository.findAllAircraftId();
+
+		if (super.getRequest().hasData("id", int.class)) {
+			Integer aircraftId = super.getRequest().getData("id", int.class);
+
+			if (!"0".equals(aircraftId))
+				status = status && aircraftsId.contains(aircraftId);
+		}
+
+		if (super.getRequest().hasData("status", String.class)) {
+			String aircraftStatus = super.getRequest().getData("status", String.class);
+
+			if (!"0".equals(aircraftStatus))
+				try {
+					OperationalScope.valueOf(aircraftStatus);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = false;
+				}
+		}
+
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
@@ -100,6 +122,7 @@ public class AdministratorAircraftCreateService extends AbstractGuiService<Admin
 		dataset.put("readonly", false);
 		dataset.put("airlines", airlineChoices);
 		dataset.put("airline", airlineChoices.getSelected().getKey());
+		dataset.put("readOnlyStatus", false);
 
 		super.getResponse().addData(dataset);
 	}
