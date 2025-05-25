@@ -21,4 +21,7 @@ public interface AdministratorAirportRepository extends AbstractRepository {
 
 	@Query("select a from Airport a WHERE a.IATAcode = :IATAcode")
 	Airport findAirportByIataCode(@Param("IATAcode") String IATAcode);
+
+	@Query("select a from Airport a WHERE a.email = :email")
+	Airport findAirportByEmail(@Param("email") String email);
 }

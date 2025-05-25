@@ -26,4 +26,6 @@ administrator.airport.form.label.confirmation.create = ¿Estás seguro de que qu
 administrator.airport.form.label.confirmation.update = ¿Estás seguro de que quieres actualizar el aeropuerto anterior?
 administrator.airport.form.button.create = Crear aeropuerto
 administrator.airport.form.button.update = Actualizar aeropuerto
+
 acme.validation.confirmation.message.aiport.IATAcode = Ya existe otro aeropuerto con ese código IATA
+acme.validation.confirmation.message.aiport.email = Ya existe otro aeropuerto con ese email
