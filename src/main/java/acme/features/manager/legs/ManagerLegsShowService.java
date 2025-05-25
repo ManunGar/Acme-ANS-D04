@@ -80,7 +80,7 @@ public class ManagerLegsShowService extends AbstractGuiService<AirlineManager, L
 
 		dataset = super.unbindObject(leg, "departure", "arrival", "draftMode", "flightNumber");
 		dataset.put("status", choices);
-		dataset.put("flight", flightChoices.getSelected().getKey());
+		dataset.put("flight", leg.getFlight());
 		dataset.put("flights", flightChoices);
 		dataset.put("departureAirport", departureAirportChoices.getSelected().getKey());
 		dataset.put("departureAirports", departureAirportChoices);

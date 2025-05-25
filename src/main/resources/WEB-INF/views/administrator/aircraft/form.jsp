@@ -10,7 +10,7 @@
 		<acme:input-textbox code="administrator.aircraft.list.label.registrationNumber" path="registrationNumber"/>
 		<acme:input-textbox code="administrator.aircraft.list.label.capacity" path="capacity"/>
 		<acme:input-textbox code="administrator.aircraft.list.label.cargoWeight" path="cargoWeight"/>
-		<acme:input-select code="administrator.aircraft.list.label.aircraftStatus" path="status" choices="${aircraftStatus}" readonly="true"/>
+		<acme:input-select code="administrator.aircraft.list.label.aircraftStatus" path="status" choices="${aircraftStatus}" readonly="${readOnlyStatus}"/>
 		<acme:input-textbox code="administrator.aircraft.list.label.details" path="details" />
 		<jstl:choose>
 			<jstl:when test="${acme:anyOf(_command, 'show|update|disable|enable')}">

@@ -12,4 +12,7 @@ public interface AircraftRepository extends AbstractRepository {
 
 	@Query("select a from Aircraft a WHERE a.airline.id = :airlineId")
 	List<Aircraft> findAllAircarftByAirlineId(@Param("airlineId") Integer airlineId);
+
+	@Query("select a from Aircraft a where a.id = :aircraftId")
+	Aircraft findAircraftById(@Param("aircraftId") Integer aircraftId);
 }
