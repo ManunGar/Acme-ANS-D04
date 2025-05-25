@@ -24,6 +24,8 @@ public class ManagerFlightListService extends AbstractGuiService<AirlineManager,
 	@Override
 	public void authorise() {
 		super.getResponse().setAuthorised(true);
+		boolean isManager = super.getRequest().getPrincipal().hasRealmOfType(AirlineManager.class);
+		super.getResponse().setAuthorised(isManager);
 	}
 
 	@Override
