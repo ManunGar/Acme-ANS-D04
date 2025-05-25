@@ -25,17 +25,6 @@ public class AdministratorAirportUpdateService extends AbstractGuiService<Admini
 	public void authorise() {
 		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
 
-		if (super.getRequest().hasData("operationalScope", String.class)) {
-			String operationalScope = super.getRequest().getData("operationalScope", String.class);
-
-			if (!"0".equals(operationalScope))
-				try {
-					OperationalScope.valueOf(operationalScope);
-				} catch (IllegalArgumentException | NullPointerException e) {
-					status = false;
-				}
-		}
-
 		super.getResponse().setAuthorised(status);
 	}
 
@@ -63,9 +52,13 @@ public class AdministratorAirportUpdateService extends AbstractGuiService<Admini
 		confirmation = super.getRequest().getData("confirmation", boolean.class);
 		super.state(confirmation, "confirmation", "acme.validation.confirmation.message");
 
-		Airport a = this.repository.findAirportByIataCode(airport.getIATAcode());
-		if (a != null && a.getId() != airport.getId())
+		Airport iataCode = this.repository.findAirportByIataCode(airport.getIATAcode());
+		if (iataCode != null)
 			super.state(false, "IATAcode", "acme.validation.confirmation.message.aiport.IATAcode");
+
+		Airport email = this.repository.findAirportByEmail(airport.getEmail());
+		if (email != null)
+			super.state(false, "email", "acme.validation.confirmation.message.aiport.email");
 	}
 
 	@Override
