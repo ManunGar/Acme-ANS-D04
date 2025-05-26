@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
@@ -30,6 +32,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @ValidClaim
+@Table(indexes = {
+	@Index(columnList = "assistance_agent_id, draftMode"), @Index(columnList = "leg_id"), @Index(columnList = "registrationMoment")
+})
 public class Claim extends AbstractEntity {
 
 	private static final long	serialVersionUID	= 1L;

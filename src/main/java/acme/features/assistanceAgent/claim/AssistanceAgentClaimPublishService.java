@@ -32,12 +32,23 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 
 		if (super.getRequest().hasData("leg", int.class)) {
 			int legId = super.getRequest().getData("leg", int.class);
-			Legs leg = this.repository.findLegById(legId);
 
-			if (leg != null) {
+			if (legId != 0) {
+				Legs leg = this.repository.findLegById(legId);
 				Collection<Legs> availableLegs = this.repository.findAvailableLegs(MomentHelper.getCurrentMoment());
 				status = status && availableLegs.contains(leg);
 			}
+		}
+
+		if (super.getRequest().hasData("claimType", String.class)) {
+			String claimType = super.getRequest().getData("claimType", String.class);
+
+			if (!"0".equals(claimType))
+				try {
+					ClaimTypes.valueOf(claimType);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = false;
+				}
 		}
 
 		super.getResponse().setAuthorised(status);
@@ -64,12 +75,8 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 		int legId;
 		Legs leg;
 
-		if (claim.accepted() != AcceptedIndicator.PENDING)
-			leg = this.repository.findLegByClaimId(claim.getId());
-		else {
-			legId = super.getRequest().getData("leg", int.class);
-			leg = this.repository.findLegById(legId);
-		}
+		legId = super.getRequest().getData("leg", int.class);
+		leg = this.repository.findLegById(legId);
 
 		super.bindObject(claim, "passengerEmail", "description", "claimType");
 		claim.setLeg(leg);
@@ -81,18 +88,11 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 		int legId;
 		Legs leg;
 
-		if (claim.accepted() != AcceptedIndicator.PENDING)
-			leg = this.repository.findLegByClaimId(claim.getId());
-		else {
-			legId = super.getRequest().getData("leg", int.class);
-			leg = this.repository.findLegById(legId);
-		}
+		legId = super.getRequest().getData("leg", int.class);
+		leg = this.repository.findLegById(legId);
 
 		if (leg == null)
 			super.state(false, "leg", "acme.validation.confirmation.message.claim.leg");
-
-		if (!claim.isDraftMode())
-			super.state(false, "*", "acme.validation.confirmation.message.claim.draftMode");
 	}
 
 	@Override
@@ -126,9 +126,11 @@ public class AssistanceAgentClaimPublishService extends AbstractGuiService<Assis
 		dataset.put("draftMode", claim.isDraftMode());
 		dataset.put("undergoing", undergoing);
 		//Related to leg:
-		dataset.put("departure", claim.getLeg().getDeparture());
-		dataset.put("arrival", claim.getLeg().getArrival());
-		dataset.put("status", claim.getLeg().getStatus());
+		if (claim.getLeg() != null) {
+			dataset.put("departure", claim.getLeg().getDeparture());
+			dataset.put("arrival", claim.getLeg().getArrival());
+			dataset.put("status", claim.getLeg().getStatus());
+		}
 
 		super.getResponse().addData(dataset);
 	}

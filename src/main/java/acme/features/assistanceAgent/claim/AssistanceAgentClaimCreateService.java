@@ -36,6 +36,17 @@ public class AssistanceAgentClaimCreateService extends AbstractGuiService<Assist
 			}
 		}
 
+		if (super.getRequest().hasData("claimType", String.class)) {
+			String claimType = super.getRequest().getData("claimType", String.class);
+
+			if (!"0".equals(claimType))
+				try {
+					ClaimTypes.valueOf(claimType);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = false;
+				}
+		}
+
 		super.getResponse().setAuthorised(status);
 	}
 

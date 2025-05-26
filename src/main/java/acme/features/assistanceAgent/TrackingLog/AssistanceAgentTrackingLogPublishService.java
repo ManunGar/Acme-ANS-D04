@@ -25,6 +25,18 @@ public class AssistanceAgentTrackingLogPublishService extends AbstractGuiService
 		int trackingLogId = super.getRequest().getData("id", int.class);
 		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
 		boolean status = this.repository.isPublishableTrackingLogOwnedByAgent(trackingLogId, agentId);
+
+		if (super.getRequest().hasData("accepted", String.class)) {
+			String accepted = super.getRequest().getData("accepted", String.class);
+
+			if (!"0".equals(accepted))
+				try {
+					AcceptedIndicator.valueOf(accepted);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = false;
+				}
+		}
+
 		super.getResponse().setAuthorised(status);
 	}
 
@@ -47,12 +59,7 @@ public class AssistanceAgentTrackingLogPublishService extends AbstractGuiService
 	@Override
 	public void bind(final TrackingLog trackingLog) {
 
-		AcceptedIndicator accepted;
-		accepted = super.getRequest().getData("accepted", AcceptedIndicator.class);
-		accepted = accepted == null ? AcceptedIndicator.PENDING : accepted;
-
-		super.bindObject(trackingLog, "step", "resolutionPercentage", "resolution");
-		trackingLog.setAccepted(accepted);
+		super.bindObject(trackingLog, "step", "resolutionPercentage", "accepted", "resolution");
 
 	}
 
