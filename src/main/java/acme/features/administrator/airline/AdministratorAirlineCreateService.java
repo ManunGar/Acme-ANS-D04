@@ -11,7 +11,6 @@ import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Airlines.Airline;
 import acme.entities.Airlines.Type;
-import acme.entities.Airports.OperationalScope;
 
 @GuiService
 public class AdministratorAirlineCreateService extends AbstractGuiService<Administrator, Airline> {
@@ -23,17 +22,6 @@ public class AdministratorAirlineCreateService extends AbstractGuiService<Admini
 	@Override
 	public void authorise() {
 		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
-
-		if (super.getRequest().hasData("type", String.class)) {
-			String type = super.getRequest().getData("type", String.class);
-
-			if (!"0".equals(type))
-				try {
-					OperationalScope.valueOf(type);
-				} catch (IllegalArgumentException | NullPointerException e) {
-					status = false;
-				}
-		}
 
 		super.getResponse().setAuthorised(status);
 	}

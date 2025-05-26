@@ -48,28 +48,32 @@ public class CustomerBookingPublishService extends AbstractGuiService<Customer, 
 		booking = this.repository.findBookingById(id);
 		status = booking.getCustomer().getUserAccount().getId() == customerId;
 
-		if (booking.isDraftMode() != false && status && isCustomer) {
+		try {
+			if (booking.isDraftMode() != false && status && isCustomer) {
 
-			Date today = MomentHelper.getCurrentMoment();
-			Integer flightId = super.getRequest().getData("flight", int.class);
-			Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
-			Flight flight;
+				Date today = MomentHelper.getCurrentMoment();
+				Integer flightId = super.getRequest().getData("flight", int.class);
+				Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
+				Flight flight;
 
-			if (flightId != 0) {
-				flight = this.flightRepository.findFlightById(flightId);
-				isFlightInList = flights.contains(flight);
+				if (flightId != 0) {
+					flight = this.flightRepository.findFlightById(flightId);
+					isFlightInList = flights.contains(flight);
+				}
+
 			}
 
-		}
-
-		if (super.getRequest().hasData("travelClass", String.class)) {
-			String travelClassData = super.getRequest().getData("travelClass", String.class);
-			if (!"0".equals(travelClassData))
-				try {
-					TravelClass.valueOf(travelClassData);
-				} catch (IllegalArgumentException | NullPointerException e) {
-					travelClass = false;
-				}
+			if (super.getRequest().hasData("travelClass", String.class)) {
+				String travelClassData = super.getRequest().getData("travelClass", String.class);
+				if (!"0".equals(travelClassData))
+					try {
+						TravelClass.valueOf(travelClassData);
+					} catch (IllegalArgumentException | NullPointerException e) {
+						travelClass = false;
+					}
+			}
+		} catch (Throwable E) {
+			isFlightInList = false;
 		}
 
 		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList && isCustomer && travelClass);
