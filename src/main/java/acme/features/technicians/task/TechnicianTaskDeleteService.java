@@ -1,6 +1,8 @@
 
 package acme.features.technicians.task;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import acme.client.components.models.Dataset;
@@ -10,7 +12,6 @@ import acme.client.services.GuiService;
 import acme.entities.MaintenanceRecords.MaintenanceRecordTask;
 import acme.entities.Tasks.Task;
 import acme.entities.Tasks.TaskType;
-import acme.features.technicians.maintenanceRecordTask.TechnicianMaintenanceRecordTaskRepository;
 import acme.realms.Technician;
 
 @GuiService
@@ -19,52 +20,66 @@ public class TechnicianTaskDeleteService extends AbstractGuiService<Technician, 
 	// Internal state ------------------------------------------------------------
 
 	@Autowired
-	private TechnicianTaskRepository					repository;
-
-	@Autowired
-	private TechnicianMaintenanceRecordTaskRepository	mrtRepository;
+	private TechnicianTaskRepository repository;
 
 	// AbstractGuiService interface ----------------------------------------------
 
 
 	@Override
 	public void authorise() {
-		boolean isTechnician = super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
-		super.getResponse().setAuthorised(isTechnician);
+		boolean status = false;
+		Integer taskId;
+		Task task;
+		Technician technician;
+
+		if (super.getRequest().hasData("id", Integer.class)) {
+			taskId = super.getRequest().getData("id", Integer.class);
+			if (taskId != null) {
+				task = this.repository.findTaskById(taskId);
+				if (task != null) {
+					technician = task.getTechnician();
+					status = task.isDraftMode() && super.getRequest().getPrincipal().hasRealm(technician);
+				}
+			}
+		}
+
+		super.getResponse().setAuthorised(status);
+
 	}
 
 	@Override
 	public void load() {
+		int taskId;
 		Task task;
-		int id;
 
-		id = super.getRequest().getData("id", int.class);
-		task = this.repository.findTaskById(id);
+		taskId = super.getRequest().getData("id", int.class);
+		task = this.repository.findTaskById(taskId);
 
 		super.getBuffer().addData(task);
-
 	}
 
 	@Override
 	public void bind(final Task task) {
 
-		super.bindObject(task, "type", "description", "priority", "estimatedDuration");
 	}
 
 	@Override
 	public void validate(final Task task) {
-		;
+		boolean status;
+		Collection<MaintenanceRecordTask> mrTask;
+
+		mrTask = this.repository.findMaintenanceRecordTasksFromTaskId(task.getId());
+
+		status = mrTask.isEmpty();
+		super.state(status, "*", "acme.validation.task.maintenance-record-linked.message", task);
 	}
 
 	@Override
 	public void perform(final Task task) {
 
-		for (MaintenanceRecordTask mrt : this.mrtRepository.findMaintenanceRecordTaskByTaskId(task.getId()))
-			this.mrtRepository.delete(mrt);
-
 		this.repository.delete(task);
-	}
 
+	}
 	@Override
 	public void unbind(final Task task) {
 		SelectChoices choices;
@@ -72,8 +87,10 @@ public class TechnicianTaskDeleteService extends AbstractGuiService<Technician, 
 
 		choices = SelectChoices.from(TaskType.class, task.getType());
 
-		dataset = super.unbindObject(task, "technician.identity.name", "type", "description", "priority", "estimatedDuration");
-		dataset.put("type", choices);
+		dataset = super.unbindObject(task, "type", "description", "priority", "estimatedDuration", "draftMode");
+		dataset.put("technician", task.getTechnician().getIdentity().getFullName());
+		dataset.put("type", choices.getSelected().getKey());
+		dataset.put("types", choices);
 
 		super.getResponse().addData(dataset);
 	}

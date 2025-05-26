@@ -61,8 +61,19 @@ master.menu.passenger = Passengers
 
 # master.menu.technician ##########################################################
 
-master.menu.technician = Maintenance records
+master.menu.technician = Technician
+
+# master.menu.task ##########################################################
+
 master.menu.task = Tasks
+master.menu.task.list-my-tasks = List my tasks
+master.menu.task.list-published-tasks = List published tasks
+
+# master.menu.maintenance-record ##########################################################
+
+master.menu.maintenance-record = Maintenance Records
+master.menu.maintenance-record.list-my-maintenance-records= List my maintenance records
+master.menu.maintenance-record.list-published-maintenance-records = List published maintenance records
 
 # master.menu.user-account ####################################################
 

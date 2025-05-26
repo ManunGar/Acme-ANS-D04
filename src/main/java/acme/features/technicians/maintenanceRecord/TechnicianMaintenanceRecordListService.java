@@ -24,34 +24,39 @@ public class TechnicianMaintenanceRecordListService extends AbstractGuiService<T
 
 	@Override
 	public void authorise() {
-		boolean status;
-		int technicianId;
-		Collection<MaintenanceRecord> maintenanceRecords;
-
-		technicianId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
-		maintenanceRecords = this.repository.findMaintenanceRecordsByTechnicianId(technicianId);
-		status = maintenanceRecords.stream().allMatch(mr -> mr.getTechnician().getUserAccount().getId() == technicianId) && super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
-
-		super.getResponse().setAuthorised(status);
+		super.getResponse().setAuthorised(true);
 	}
 
 	@Override
 	public void load() {
 		Collection<MaintenanceRecord> maintenanceRecords;
 		int technicianId;
+		boolean mine;
+		boolean showCreate = false;
 
 		technicianId = super.getRequest().getPrincipal().getActiveRealm().getId();
-		maintenanceRecords = this.repository.findMaintenanceRecordsByTechnicianId(technicianId);
+		mine = super.getRequest().hasData("mine", boolean.class);
 
+		if (mine) {
+			maintenanceRecords = this.repository.findMaintenanceRecordsByTechnicianId(technicianId);
+			showCreate = true;
+		} else
+			maintenanceRecords = this.repository.findPublishedMaintenanceRecords();
+
+		super.getResponse().addGlobal("showCreate", showCreate);
 		super.getBuffer().addData(maintenanceRecords);
+
 	}
 
 	@Override
 	public void unbind(final MaintenanceRecord maintenanceRecord) {
 		Dataset dataset;
 
-		dataset = super.unbindObject(maintenanceRecord, "aircraft.model", "maintenanceMoment", "nextInspection", "status");
-		super.addPayload(dataset, maintenanceRecord, "estimatedCost", "technician.identity.name");
+		dataset = super.unbindObject(maintenanceRecord, "aircraft.model", "maintenanceMoment", "status", "nextInspection");
+		super.addPayload(dataset, maintenanceRecord, //
+			"estimatedCost", "notes", "draftMode", "aircraft.model", //
+			"aircraft.registrationNumber", "technician.identity.fullName",//
+			"technician.licenseNumber", "technician.phoneNumber");
 
 		super.getResponse().addData(dataset);
 	}

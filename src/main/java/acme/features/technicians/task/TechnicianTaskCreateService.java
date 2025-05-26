@@ -3,13 +3,15 @@ package acme.features.technicians.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import acme.client.components.basis.AbstractRealm;
 import acme.client.components.models.Dataset;
 import acme.client.components.views.SelectChoices;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
+import acme.entities.MaintenanceRecords.MaintenanceRecord;
+import acme.entities.MaintenanceRecords.MaintenanceRecordTask;
 import acme.entities.Tasks.Task;
 import acme.entities.Tasks.TaskType;
+import acme.features.technicians.maintenanceRecord.TechnicianMaintenanceRecordRepository;
 import acme.realms.Technician;
 
 @GuiService
@@ -18,27 +20,48 @@ public class TechnicianTaskCreateService extends AbstractGuiService<Technician, 
 	// Internal state ------------------------------------------------------------
 
 	@Autowired
-	private TechnicianTaskRepository repository;
+	private TechnicianTaskRepository				repository;
+
+	@Autowired
+	private TechnicianMaintenanceRecordRepository	maintenanceRecordRepository;
 
 	// AbstractGuiService interface ----------------------------------------------
 
 
 	@Override
 	public void authorise() {
-		boolean isTechnician = super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
-		super.getResponse().setAuthorised(isTechnician);
+		boolean status = false;
+		Integer maintenanceRecordId = null;
+		MaintenanceRecord maintenanceRecord;
+		Technician technician;
+
+		if (super.getRequest().hasData("maintenanceRecordId")) {
+			maintenanceRecordId = super.getRequest().getData("maintenanceRecordId", Integer.class);
+
+			if (maintenanceRecordId != null) {
+				maintenanceRecord = this.maintenanceRecordRepository.findMaintenanceRecordById(maintenanceRecordId);
+
+				if (maintenanceRecord != null) {
+					technician = (Technician) super.getRequest().getPrincipal().getActiveRealm();
+					status = maintenanceRecord.isDraftMode() && technician.equals(maintenanceRecord.getTechnician());
+				}
+			}
+		} else
+			status = true;
+
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
 	public void load() {
 		Task task;
-		AbstractRealm technicianRealm = super.getRequest().getPrincipal().getActiveRealm();
-		int technicianId = technicianRealm.getId();
-		Technician technician = this.repository.findTechnicianById(technicianId);
+		Technician technician;
+
+		technician = (Technician) super.getRequest().getPrincipal().getActiveRealm();
 
 		task = new Task();
-		task.setTechnician(technician);
 		task.setDraftMode(true);
+		task.setTechnician(technician);
 
 		super.getBuffer().addData(task);
 	}
@@ -56,8 +79,25 @@ public class TechnicianTaskCreateService extends AbstractGuiService<Technician, 
 
 	@Override
 	public void perform(final Task task) {
+		Integer maintenanceRecordId;
+		MaintenanceRecord maintenanceRecord;
+		MaintenanceRecordTask mrTask;
+
+		maintenanceRecordId = super.getRequest().hasData("maintenanceRecordId") ?//
+			super.getRequest().getData("maintenanceRecordId", Integer.class) : null;
 
 		this.repository.save(task);
+
+		if (maintenanceRecordId != null) {
+
+			mrTask = new MaintenanceRecordTask();
+			maintenanceRecord = this.maintenanceRecordRepository.findMaintenanceRecordById(maintenanceRecordId);
+
+			mrTask.setTask(task);
+			mrTask.setMaintenanceRecord(maintenanceRecord);
+
+			this.repository.save(mrTask);
+		}
 	}
 
 	@Override
@@ -67,8 +107,12 @@ public class TechnicianTaskCreateService extends AbstractGuiService<Technician, 
 
 		choices = SelectChoices.from(TaskType.class, task.getType());
 
-		dataset = super.unbindObject(task, "technician.identity.name", "type", "description", "priority", "estimatedDuration");
-		dataset.put("type", choices);
+		dataset = super.unbindObject(task, "type", "description", "priority", "estimatedDuration", "draftMode");
+		dataset.put("technician", task.getTechnician().getIdentity().getFullName());
+		dataset.put("type", choices.getSelected().getKey());
+		dataset.put("types", choices);
+		if (super.getRequest().hasData("maintenanceRecordId"))
+			dataset.put("maintenanceRecordId", super.getRequest().getData("maintenanceRecordId", Integer.class));
 
 		super.getResponse().addData(dataset);
 	}

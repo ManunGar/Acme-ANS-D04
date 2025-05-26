@@ -1,8 +1,8 @@
 technician.maintenance-record.form.title = Detalles del registro de mantenimiento
 technician.maintenance-record.list.title = Listado de registros de mantenimiento
 
-technician.maintenance-record.form.label.maintenanceDate = Fecha de mantenimiento:
-technician.maintenance-record.form.label.nextInspectionDueDate = Próxima inspección:
+technician.maintenance-record.form.label.maintenanceMoment = Fecha de mantenimiento:
+technician.maintenance-record.form.label.nextInspection = Próxima inspección:
 technician.maintenance-record.form.label.status = Estado:
 technician.maintenance-record.form.label.estimatedCost = Coste estimado:
 technician.maintenance-record.form.label.notes = Notas: (Opcional)
@@ -15,16 +15,13 @@ technician.maintenance-record.form.button.update = Actualizar registro
 technician.maintenance-record.form.button.publish = Publicar registro
 technician.maintenance-record.form.button.delete = Eliminar registro
 
-technician.maintenance-record.list.label.aircraft-model = Aeronave
-technician.maintenance-record.list.label.maintenanceDate = Fecha de mantenimiento
-technician.maintenance-record.list.label.nextInspectionDueDate = Próxima inspección
+technician.maintenance-record.list.label.aircraft-model = Avión
+technician.maintenance-record.list.label.maintenanceMoment = Fecha de mantenimiento
+technician.maintenance-record.list.label.nextInspection = Próxima inspección
 technician.maintenance-record.list.label.status = Estado
 
 technician.maintenance-record.list.button.create = Crear registro
 
-technician.maintenance-record.create.status = El registro de mantenimiento no puede estar completado al crearse
-
-technician.maintenance-record.publish.status = El registro de mantenimiento debe estar completado
-technician.maintenance-record.publish.publishedTasks = El registro de mantenimiento no tiene tareas publicadas o tiene tareas sin publicar
-
-acme.validation.length = Debe estar comprendido entre 0 y 255
+technician.maintenance-record.form.error.zero-tasks = Este registro debe tener al menos una tarea publicada para poder ser publicado
+technician.maintenance-record.form.error.not-all-tasks-published = Este registro debe tener todas sus tareas publicadas para ser publicado
+technician.maintenance-record.form.error.not-completed-status = El estado de un registro debe ser "completado" para ser publicado
