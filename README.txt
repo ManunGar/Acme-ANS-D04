@@ -8,14 +8,11 @@
 # purposes.  The copyright owner does not offer any warranties or representations, nor do
 # they accept any liabilities with respect to them.
 
-This is a starter project.  It is intended to be a core learning asset for the students
-who have enrolled the Design and Testing subject of the Software Engineering curriculum of the 
-University of Seville.  This project helps them start working on their new information system 
-projects.
-
-To get this project up and running, please follow the guideline in the theory/lab materials,
-taking into account that you must link the appropriate version of the Acme-Framework excluding 
-the following resources:
+This project is developed by group C1.023, it is part of the "Design and Testing II" course at the University of Seville. 
+It is an educational software initiative aimed at supporting airport operations by providing tools that facilitate the coordination 
+and management of various logistical tasks. The project focuses on enhancing processes such as flight scheduling, crew assignments, 
+booking systems, and maintenance tracking. Developed within an academic context, it not only serves as a practical solution for 
+improving airport efficiency but also as a learning platform for students to apply software engineering principles in real-world scenarios.
 
 **Planning Dashboard:**
 
