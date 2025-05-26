@@ -40,9 +40,14 @@ public class AssistanceAgentClaimShowService extends AbstractGuiService<Assistan
 
 	@Override
 	public void authorise() {
-		int claimId = super.getRequest().getData("id", int.class);
-		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
-		boolean status = this.repository.isClaimOwnedByAgent(claimId, agentId);
+		boolean status;
+		try {
+			int claimId = super.getRequest().getData("id", int.class);
+			int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
+			status = this.repository.isClaimOwnedByAgent(claimId, agentId);
+		} catch (Throwable e) {
+			status = false;
+		}
 		super.getResponse().setAuthorised(status);
 	}
 
