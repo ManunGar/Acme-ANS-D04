@@ -15,8 +15,8 @@ technician.maintenance-record-task.form.label.task = Task:
 technician.maintenance-record-task.form.label.aircraft = Aircraft associated:
 
 
-technician.maintenance-record-task.form.button.link = Link Task
-technician.maintenance-record-task.form.button.unlink = Unlink Task
+technician.maintenance-record-task.form.button.link = Link
+technician.maintenance-record-task.form.button.unlink = Unlink
 
 
 technician.maintenance-record-task.list.label.maintenanceRecord = Maintenance record

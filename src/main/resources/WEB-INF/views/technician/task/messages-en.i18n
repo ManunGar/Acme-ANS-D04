@@ -17,5 +17,5 @@ technician.task.list.label.description = Description
 technician.task.list.label.priority = Priority
 
 technician.task.list.button.create = Create Task
-technician.task.list.button.link = Link
-technician.task.list.button.unlink = UnLink
+technician.task.list.button.link = Link Task
+technician.task.list.button.unlink = UnLink Task

@@ -15,8 +15,8 @@ technician.involves.form.label.task = Tarea:
 technician.involves.form.label.aircraft = Avión asociado:
 
 
-technician.involves.form.button.link = Vincular Tarea
-technician.involves.form.button.unlink = Desvincular Tarea
+technician.involves.form.button.link = Vincular
+technician.involves.form.button.unlink = Desvincular
 
 technician.involves.list.label.maintenanceRecord = Registro de mantenimiento
 technician.involves.list.label.task = Tarea
