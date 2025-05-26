@@ -33,7 +33,6 @@ master.menu.administrator.shut-system-down = Parar el sistema
 # master.menu.assistanceAgent ########################################################
 
 master.menu.assistanceAgent = assistanceAgent
-master.menu.booking = Bookings = Reservas publicadas
 assistanceAgent.claim.list.button.list.resolved = Listar quejas resueltas
 assistanceAgent.claim.list.button.list.notResolved = Listar quejas pendientes
 
@@ -58,6 +57,7 @@ master.menu.manager.list-flight = Listado de vuelos
 master.menu.customer = Comprador
 master.menu.customer = Reservas
 master.menu.passenger = Pasajeros
+master.menu.booking = Reservas 
 
 # master.menu.technician ##########################################################
 
