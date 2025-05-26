@@ -46,16 +46,6 @@ public class TechnicianMaintenanceRecordUpdateService extends AbstractGuiService
 
 				status = isDraft && isTechnician;
 
-				if (status) {
-					MaintenanceStatus maintenanceStatus = maintenanceRecord.getStatus();
-					boolean validStatus = false;
-					for (MaintenanceStatus ms : MaintenanceStatus.values())
-						if (ms.equals(maintenanceStatus)) {
-							validStatus = true;
-							break;
-						}
-					status = validStatus;
-				}
 			}
 		}
 
