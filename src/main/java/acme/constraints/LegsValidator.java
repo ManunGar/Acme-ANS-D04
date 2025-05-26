@@ -20,11 +20,6 @@ public class LegsValidator extends AbstractValidator<ValidLegs, Legs> {
 
 
 	@Override
-	protected void initialise(final ValidLegs annotation) {
-		assert annotation != null;
-	}
-
-	@Override
 	public boolean isValid(final Legs leg, final ConstraintValidatorContext context) {
 
 		assert context != null;

@@ -14,11 +14,11 @@ customer.booking.form.title = Detalles de la Reserva
 authenticated.booking.list.label.locatorCode = Código de localización
 authenticated.booking.list.label.purchaseMoment = Momento de compra
 authenticated.booking.list.label.travelClass = Tipo de viaje
-authenticated.booking.list.label.lastNibble = Ultima tarjeta
+authenticated.booking.list.label.lastNibble = Última tarjeta (Opcional)
 authenticated.booking.list.label.price = Precio
 authenticated.booking.list.label.passenger = Pasajeros
 authenticated.booking.list.label.draftMode = Estado de publicación
-authenticated.booking.list.label.flight = vuelo
+authenticated.booking.list.label.flight = Vuelo
 
 authenticated.booking.form.button.create = Crear reserva
 authenticated.booking.form.button.update = Actualizar reserva

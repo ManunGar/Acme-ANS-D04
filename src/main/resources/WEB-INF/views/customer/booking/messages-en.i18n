@@ -11,14 +11,14 @@
 customer.booking.list.title = List of bookings
 customer.booking.form.title = Details of the booking
 
-authenticated.booking.list.label.locatorCode = locator Code
+authenticated.booking.list.label.locatorCode = Locator Code
 authenticated.booking.list.label.purchaseMoment = Purchase Moment
 authenticated.booking.list.label.travelClass = Travel Class
-authenticated.booking.list.label.lastNibble = Last Nibble
+authenticated.booking.list.label.lastNibble = Last Nibble (Optional)
 authenticated.booking.list.label.price = Price
 authenticated.booking.list.label.passenger = Passengers
 authenticated.booking.list.label.draftMode = draftMode
-authenticated.booking.list.label.flight = flight
+authenticated.booking.list.label.flight = Flight
 
 authenticated.booking.form.button.create = Create booking
 authenticated.booking.form.button.update = Update booking
