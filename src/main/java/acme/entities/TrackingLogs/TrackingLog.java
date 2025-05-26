@@ -61,11 +61,6 @@ public class TrackingLog extends AbstractEntity {
 	@Automapped
 	private boolean				draftMode;
 
-	@Optional
-	@ValidString
-	@Automapped
-	private String				resolution;
-
 	@Mandatory
 	@ValidMoment(past = true)
 	@Temporal(TemporalType.TIMESTAMP)
@@ -74,6 +69,11 @@ public class TrackingLog extends AbstractEntity {
 	@Mandatory
 	@Automapped
 	private boolean				secondTrackingLog;
+
+	@Optional
+	@ValidString
+	@Automapped
+	private String				resolution;
 
 	/*
 	 * The `createdMoment` attribute is used to chronologically

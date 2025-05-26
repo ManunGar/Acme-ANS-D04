@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <diagram program="umlet" version="15.1">
   <help_text/>
-  <zoom_level>8</zoom_level>
+  <zoom_level>7</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>232</x>
-      <y>64</y>
-      <w>528</w>
-      <h>152</h>
+      <x>175</x>
+      <y>63</y>
+      <w>462</w>
+      <h>133</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Role&gt;&gt;
 AssistanceAgent
@@ -25,10 +25,10 @@ bg=pink</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>32</x>
-      <y>304</y>
-      <w>544</w>
-      <h>152</h>
+      <x>0</x>
+      <y>273</y>
+      <w>476</w>
+      <h>133</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Entity&gt;&gt;
 Claim
@@ -36,18 +36,21 @@ Claim
 + registrationMoment: Date {Mandatory, ValidMoment(past = true), Temporal(TemporalType.TIMESTAMP)}
 + passengerEmail: String {Mandatory, ValidEmail, Automapped}
 + description: String {Mandatory, ValidLongText, Automapped}
-+ claimTypes: ClaimTypes {Mandatory, Valid, Automapped}
-+ accepted: boolean {Mandatory, Automapped}
++ claimType: ClaimTypes {Mandatory, Valid, Automapped}
++ draftMode: boolean {Mandatory, Automapped}
+
+--
+\+ accepted: AcceptedIndicator
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>32</x>
-      <y>544</y>
-      <w>544</w>
-      <h>152</h>
+      <x>0</x>
+      <y>483</y>
+      <w>476</w>
+      <h>154</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Entity&gt;&gt;
 TrackingLog
@@ -55,7 +58,10 @@ TrackingLog
 + lastUpdateMoment: Date {Mandatory, ValidMoment(past = true), Temporal(TemporalType.TIMESTAMP)}
 + step: String {Mandatory, ValidShortText, Automapped}
 + resolutionPercentage: double {Mandatory, ValidScore, Automapped}
-+ accepted: boolean {Mandatory, Automapped}
++ accepted: AcceptedIndicator {Mandatory, Valid, Automapped}
++ draftMode: boolean {Mandatory, Automapped}
++ createdMoment: Date {Mandatory, ValidMoment(past = true), Temporal(TemporalType.TIMESTAMP)}
++ secondTrackingLog: boolean {Mandatory, Automapped}
 + resolution: String {Optional, ValidLongText, Automapped}
 --
 \+ validResolution: boolean
@@ -65,10 +71,10 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>728</x>
-      <y>304</y>
-      <w>112</w>
-      <h>40</h>
+      <x>609</x>
+      <y>273</y>
+      <w>98</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Entity&gt;&gt;
 Airline
@@ -78,13 +84,13 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>824</x>
-      <y>72</y>
-      <w>168</w>
-      <h>104</h>
+      <x>693</x>
+      <y>70</y>
+      <w>147</w>
+      <h>91</h>
     </coordinates>
     <panel_attributes>&lt;&lt;ENUM&gt;&gt;
-ClaimType
+ClaimTypes
 --
 FLIGHT_ISSUES
 LUGGAGE_ISSUES
@@ -96,27 +102,27 @@ bg=green</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1048</x>
-      <y>72</y>
-      <w>168</w>
-      <h>104</h>
+      <x>889</x>
+      <y>70</y>
+      <w>147</w>
+      <h>91</h>
     </coordinates>
     <panel_attributes>&lt;&lt;ENUM&gt;&gt;
-AirlineType
+AcceptedIndicator
 --
-LUXURY
-STANDARD
-LOW-COST
+ACCEPTED
+PENDING
+REJECTED
 bg=green</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>552</x>
-      <y>208</y>
-      <w>192</w>
-      <h>112</h>
+      <x>455</x>
+      <y>189</y>
+      <w>168</w>
+      <h>98</h>
     </coordinates>
     <panel_attributes>lt=x-&gt;
 m1=*
@@ -129,10 +135,10 @@ works for</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>296</x>
-      <y>448</y>
-      <w>56</w>
-      <h>112</h>
+      <x>231</x>
+      <y>399</y>
+      <w>49</w>
+      <h>98</h>
     </coordinates>
     <panel_attributes>lt=&lt;-x
 m1=1
@@ -143,10 +149,10 @@ tracks</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>272</x>
-      <y>208</y>
-      <w>168</w>
-      <h>112</h>
+      <x>210</x>
+      <y>189</y>
+      <w>147</w>
+      <h>98</h>
     </coordinates>
     <panel_attributes>lt=x-&gt;
 m1=*
@@ -159,10 +165,10 @@ registers</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>216</y>
-      <w>344</w>
-      <h>192</h>
+      <x>777</x>
+      <y>196</y>
+      <w>301</w>
+      <h>168</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Form&gt;&gt;
 AssistanceAgentDashboard
@@ -184,10 +190,10 @@ bg=cyan</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>520</y>
-      <w>344</w>
-      <h>80</h>
+      <x>777</x>
+      <y>539</y>
+      <w>301</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Constraint&gt;&gt;
 ValidTrackingLog
@@ -199,10 +205,10 @@ bg=RED</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>424</y>
-      <w>344</w>
-      <h>80</h>
+      <x>777</x>
+      <y>455</y>
+      <w>301</w>
+      <h>70</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Constraint&gt;&gt;
 ValidClaim
@@ -215,10 +221,10 @@ bg=RED</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>728</x>
-      <y>368</y>
-      <w>112</w>
-      <h>40</h>
+      <x>609</x>
+      <y>329</y>
+      <w>98</w>
+      <h>35</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Entity&gt;&gt;
 Legs
@@ -228,10 +234,10 @@ bg=green</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>568</x>
-      <y>368</y>
-      <w>176</w>
-      <h>48</h>
+      <x>469</x>
+      <y>329</y>
+      <w>154</w>
+      <h>42</h>
     </coordinates>
     <panel_attributes>lt=x-&gt;
 m1=*
@@ -244,16 +250,32 @@ request or complain</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>920</x>
-      <y>632</y>
-      <w>352</w>
-      <h>72</h>
+      <x>777</x>
+      <y>623</y>
+      <w>308</w>
+      <h>63</h>
     </coordinates>
     <panel_attributes>&lt;&lt;Constraint&gt;&gt;
 ValidIdentifier
 --
 + NotBlank
 + Regexp = "^[A-Z]{2,3}\\d{6}$"
+bg=RED</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>777</x>
+      <y>378</y>
+      <w>308</w>
+      <h>63</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Constraint&gt;&gt;
+ValidAssistanceAgent
+--
++ Validates employeeCode is unique
++ Validates the format of spokenLanguages is correct
 bg=RED</panel_attributes>
     <additional_attributes/>
   </element>
