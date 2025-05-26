@@ -8,19 +8,19 @@
 # purposes.  The copyright owner does not offer any warranties or representations, nor do
 # they accept any liabilities with respect to them.
 
-technician.involves.form.title = Vincular tarea a Registro
-technician.involves.list.title = Lista de tareas vinculadas
+technician.maintenance-record-task.form.title = Vincular tarea a Registro
+technician.maintenance-record-task.list.title = Lista de tareas vinculadas
 
-technician.involves.form.label.task = Tarea:
-technician.involves.form.label.aircraft = Avión asociado:
+technician.maintenance-record-task.form.label.task = Tarea:
+technician.maintenance-record-task.form.label.aircraft = Avión asociado:
 
 
-technician.involves.form.button.link = Vincular
-technician.involves.form.button.unlink = Desvincular
+technician.maintenance-record-task.form.button.link = Vincular
+technician.maintenance-record-task.form.button.unlink = Desvincular
 
-technician.involves.list.label.maintenanceRecord = Registro de mantenimiento
-technician.involves.list.label.task = Tarea
+technician.maintenance-record-task.list.label.maintenanceRecord = Registro de mantenimiento
+technician.maintenance-record-task.list.label.task = Tarea
 
-technician.involves.list.button.create = Crear
+technician.maintenance-record-task.list.button.create = Crear
 
-technician.involves.form.error.no-task-to-unlink = No puede ser nulo  
+technician.maintenance-record-task.form.error.no-task-to-unlink = No puede ser nulo  
