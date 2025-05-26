@@ -25,11 +25,14 @@ public class AuthenticatedCustomerUpdateService extends AbstractGuiService<Authe
 		boolean status;
 		int userAccountId;
 		Customer object;
+		try {
 
-		userAccountId = super.getRequest().getPrincipal().getAccountId();
-		object = this.repository.findCustomerByUserAccountId(userAccountId);
-		status = super.getRequest().getPrincipal().hasRealmOfType(Customer.class) && super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId() == object.getUserAccount().getId();
-
+			userAccountId = super.getRequest().getPrincipal().getAccountId();
+			object = this.repository.findCustomerByUserAccountId(userAccountId);
+			status = super.getRequest().getPrincipal().hasRealmOfType(Customer.class) && super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId() == object.getUserAccount().getId();
+		} catch (Throwable E) {
+			status = false;
+		}
 		super.getResponse().setAuthorised(status);
 	}
 
