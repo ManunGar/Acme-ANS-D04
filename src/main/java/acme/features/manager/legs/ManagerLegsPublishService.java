@@ -1,9 +1,7 @@
 
 package acme.features.manager.legs;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,44 +46,40 @@ public class ManagerLegsPublishService extends AbstractGuiService<AirlineManager
 		int legId;
 		Legs legs;
 		boolean autorhorise;
+		boolean draftMode;
 		boolean isDeparture = true;
 		boolean isArrival = true;
-		boolean isFlight = true;
 		boolean isAircraft = true;
 
 		legId = super.getRequest().getData("id", int.class);
 		userId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
 		legs = this.repository.findLegById(legId);
 		autorhorise = legs.getFlight().getManager().getUserAccount().getId() == userId;
+		draftMode = legs.getDraftMode();
 
-		Collection<Flight> flights = this.flightRepository.findAllFlight();
 		Collection<Aircraft> aircrafts = this.aircraftRepository.findAllAircarftByAirlineId(legs.getFlight().getManager().getAirline().getId());
 		Collection<Airport> airports = this.airportRepository.findAllAirport();
 
-		Integer flightId = super.getRequest().getData("flight", int.class);
-		if (flightId != 0) {
-			Flight f = this.flightRepository.findFlightById(flightId);
-			isFlight = flights.contains(f);
+		if (draftMode && autorhorise) {
+			Integer departure = super.getRequest().getData("departureAirport", int.class);
+			Integer arrival = super.getRequest().getData("arrivalAirport", int.class);
+			if (departure != 0) {
+				Airport ad = this.airportRepository.findAirportById(departure);
+				isDeparture = airports.contains(ad);
+			}
+			if (arrival != 0) {
+				Airport aa = this.airportRepository.findAirportById(arrival);
+				isArrival = airports.contains(aa);
+			}
+
+			Integer aircraft = super.getRequest().getData("aircraft", int.class);
+			if (aircraft != 0) {
+				Aircraft a = this.aircraftRepository.findAircraftById(aircraft);
+				isAircraft = aircrafts.contains(a);
+			}
 		}
 
-		Integer departure = super.getRequest().getData("departureAirport", int.class);
-		Integer arrival = super.getRequest().getData("arrivalAirport", int.class);
-		if (departure != 0) {
-			Airport ad = this.airportRepository.findAirportById(departure);
-			isDeparture = airports.contains(ad);
-		}
-		if (arrival != 0) {
-			Airport aa = this.airportRepository.findAirportById(arrival);
-			isArrival = airports.contains(aa);
-		}
-
-		Integer aircraft = super.getRequest().getData("aircraft", int.class);
-		if (aircraft != 0) {
-			Aircraft a = this.aircraftRepository.findAircraftById(aircraft);
-			isAircraft = aircrafts.contains(a);
-		}
-
-		super.getResponse().setAuthorised(autorhorise && isFlight && isDeparture && isArrival && isAircraft);
+		super.getResponse().setAuthorised(autorhorise && isDeparture && isArrival && isAircraft);
 	}
 
 	@Override
@@ -111,7 +105,7 @@ public class ManagerLegsPublishService extends AbstractGuiService<AirlineManager
 		confirmation = super.getRequest().getData("confirmation", boolean.class);
 		super.state(confirmation, "confirmation", "acme.validation.confirmation.message");
 		// No haya nada nulo
-		if (leg == null || leg.getAircraft() == null || leg.getDeparture() == null || leg.getArrival() == null || leg.getDepartureAirport() == null || leg.getArrivalAirport() == null)
+		if (leg.getAircraft() == null || leg.getDeparture() == null || leg.getArrival() == null || leg.getDepartureAirport() == null || leg.getArrivalAirport() == null)
 			super.state(false, "*", "acme.validation.NotNull.message");
 		else {
 			// Fechas salida y llegada bien ordenada
@@ -195,9 +189,4 @@ public class ManagerLegsPublishService extends AbstractGuiService<AirlineManager
 		super.getResponse().addData(dataset);
 	}
 
-	public static List<Legs> sortLegsByDeparture(final List<Legs> legs) {
-		List<Legs> sortedLegs = new ArrayList<>(legs);
-		sortedLegs.sort(Comparator.comparing(Legs::getDeparture));
-		return sortedLegs;
-	}
 }

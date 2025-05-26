@@ -1,9 +1,7 @@
 
 package acme.features.manager.legs;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -52,24 +50,18 @@ public class ManagerLegsCreateService extends AbstractGuiService<AirlineManager,
 		int managerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
 		boolean isDeparture = true;
 		boolean isArrival = true;
-		boolean isFlight = true;
+		boolean isDraftMode = true;
 		boolean isAircraft = true;
 
 		id = super.getRequest().getData("flightId", int.class);
 		flight = this.flightRepository.findFlightById(id);
 		boolean status = flight.getManager().getUserAccount().getId() == managerId;
+		isDraftMode = flight.getDraftMode();
 
-		Collection<Flight> flights = this.flightRepository.findAllFlight();
 		Collection<Aircraft> aircrafts = this.aircraftRepository.findAllAircarftByAirlineId(flight.getManager().getAirline().getId());
 		Collection<Airport> airports = this.airportRepository.findAllAirport();
 
 		if (super.getRequest().hasData("id")) {
-			Integer flightId = super.getRequest().getData("flight", int.class);
-			System.out.println(flightId);
-			if (flightId != 0) {
-				Flight f = this.flightRepository.findFlightById(flightId);
-				isFlight = flights.contains(f);
-			}
 
 			Integer departure = super.getRequest().getData("departureAirport", int.class);
 			Integer arrival = super.getRequest().getData("arrivalAirport", int.class);
@@ -89,7 +81,7 @@ public class ManagerLegsCreateService extends AbstractGuiService<AirlineManager,
 			}
 		}
 
-		super.getResponse().setAuthorised(status && isFlight && isDeparture && isArrival && isAircraft);
+		super.getResponse().setAuthorised(status && isDraftMode && isDeparture && isArrival && isAircraft);
 	}
 
 	@Override
@@ -133,7 +125,8 @@ public class ManagerLegsCreateService extends AbstractGuiService<AirlineManager,
 		confirmation = super.getRequest().getData("confirmation", boolean.class);
 		super.state(confirmation, "confirmation", "acme.validation.confirmation.message");
 		// No haya nada nulo
-		if (leg == null || leg.getAircraft() == null || leg.getDeparture() == null || leg.getArrival() == null || leg.getDepartureAirport() == null || leg.getArrivalAirport() == null)
+		System.out.println(leg);
+		if (leg.getAircraft() == null || leg.getDeparture() == null || leg.getArrival() == null || leg.getDepartureAirport() == null || leg.getArrivalAirport() == null)
 			super.state(false, "*", "acme.validation.NotNull.message");
 		else {
 			// Fechas salida y llegada bien ordenada
@@ -148,7 +141,7 @@ public class ManagerLegsCreateService extends AbstractGuiService<AirlineManager,
 			List<Legs> legs = (List<Legs>) this.repository.findAllByFlightId(leg.getFlight().getId());
 			legs.add(leg);
 			legs = LegsValidator.sortLegsByDeparture(legs);
-			for (int i = 0; i < legs.size() - 1 && correctLeg && legs.size() >= 2; i++) {
+			for (int i = 0; i < legs.size() - 1 && correctLeg; i++) {
 				// Fecha salida y llegada de dos legs ordenados coincidan
 				if (legs.get(i).getArrival().after(legs.get(i + 1).getDeparture())) {
 					correctLeg = false;
@@ -210,12 +203,6 @@ public class ManagerLegsCreateService extends AbstractGuiService<AirlineManager,
 	public void onSuccess() {
 		if (super.getRequest().getMethod().equals("POST"))
 			PrincipalHelper.handleUpdate();
-	}
-
-	public static List<Legs> sortLegsByDeparture(final List<Legs> legs) {
-		List<Legs> sortedLegs = new ArrayList<>(legs);
-		sortedLegs.sort(Comparator.comparing(Legs::getDeparture));
-		return sortedLegs;
 	}
 
 }
