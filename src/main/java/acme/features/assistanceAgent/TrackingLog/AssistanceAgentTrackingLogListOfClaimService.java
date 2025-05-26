@@ -20,7 +20,10 @@ public class AssistanceAgentTrackingLogListOfClaimService extends AbstractGuiSer
 
 	@Override
 	public void authorise() {
-		super.getResponse().setAuthorised(true);
+		int claimId = super.getRequest().getData("masterId", int.class);
+		int agentId = super.getRequest().getPrincipal().getActiveRealm().getId();
+		boolean status = this.repository.isClaimOwnedByAgent(claimId, agentId);
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override

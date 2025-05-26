@@ -29,7 +29,7 @@ trackingLog-18,2025/01/01 0:00,Lorem ipsum dolor sit ame,100.00,ACCEPTED,true,"L
 trackingLog-19,2025/01/01 0:00,Lorem ipsum dolor sit ame,100.00,REJECTED,true,"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do: eiusmod tempor incididunt ut labore et dolore magna aliqua! Ut",2025/01/01 0:00,true,claim-01
 # accepted - no singular values
 # draftMode - standard variations
-trackingLog-20,2012/07/02 0:00,Lorem ipsum dolor sit ame,50.00,PENDING,false,"",2012/07/02 0:00,false,claim-23
+trackingLog-20,2012/07/02 0:00,Lorem ipsum dolor sit ame,50.00,PENDING,true,"",2012/07/02 0:00,false,claim-23
 # draftMode - no singular values
 # resolution - standard variations
 trackingLog-21,2012/07/02 0:00,Lorem ipsum dolor sit ame,100.00,ACCEPTED,false,L,2012/07/02 0:00,false,claim-02

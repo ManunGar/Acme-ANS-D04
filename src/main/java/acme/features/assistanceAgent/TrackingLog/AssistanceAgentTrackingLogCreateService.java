@@ -10,7 +10,6 @@ import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Claims.AcceptedIndicator;
 import acme.entities.Claims.Claim;
-import acme.entities.Claims.ClaimTypes;
 import acme.entities.TrackingLogs.TrackingLog;
 import acme.realms.AssistanceAgent.AssistanceAgent;
 
@@ -29,7 +28,7 @@ public class AssistanceAgentTrackingLogCreateService extends AbstractGuiService<
 
 			if (!"0".equals(accepted))
 				try {
-					ClaimTypes.valueOf(accepted);
+					AcceptedIndicator.valueOf(accepted);
 				} catch (IllegalArgumentException | NullPointerException e) {
 					status = false;
 				}
@@ -59,12 +58,7 @@ public class AssistanceAgentTrackingLogCreateService extends AbstractGuiService<
 	@Override
 	public void bind(final TrackingLog trackingLog) {
 
-		AcceptedIndicator accepted;
-		accepted = super.getRequest().getData("accepted", AcceptedIndicator.class);
-		accepted = accepted == null ? AcceptedIndicator.PENDING : accepted;
-
-		super.bindObject(trackingLog, "step", "resolutionPercentage", "resolution", "secondTrackingLog");
-		trackingLog.setAccepted(accepted);
+		super.bindObject(trackingLog, "step", "resolutionPercentage", "resolution", "accepted", "secondTrackingLog");
 		trackingLog.setLastUpdateMoment(MomentHelper.getCurrentMoment());
 		trackingLog.setCreatedMoment(MomentHelper.getCurrentMoment());
 
