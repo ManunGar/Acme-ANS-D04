@@ -16,7 +16,10 @@ public class TechnicianMaintenanceRecordTaskController extends AbstractGuiContro
 	// Internal state ---------------------------------------------------------
 
 	@Autowired
-	private TechnicianMaintenanceRecordTaskCreateService createService;
+	private TechnicianMaintenanceRecordTaskCreateService	createService;
+
+	@Autowired
+	private TechnicianMaintenanceRecordTaskDeleteService	deleteService;
 
 	// Constructors -----------------------------------------------------------
 
@@ -24,5 +27,6 @@ public class TechnicianMaintenanceRecordTaskController extends AbstractGuiContro
 	@PostConstruct
 	protected void initialise() {
 		super.addBasicCommand("create", this.createService);
+		super.addBasicCommand("delete", this.deleteService);
 	}
 }

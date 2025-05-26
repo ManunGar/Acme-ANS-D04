@@ -28,24 +28,46 @@ public class TechnicianMaintenanceRecordPublishService extends AbstractGuiServic
 
 	@Override
 	public void authorise() {
-		int id;
+		boolean status = false;
+		boolean statusAircraft = true;
+		int maintenanceRecordId;
 		MaintenanceRecord maintenanceRecord;
-		int technicianId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
+		boolean isDraft;
+		boolean isTechnician;
+		int aircraftId;
+		Aircraft aircraft;
 
-		id = super.getRequest().getData("id", int.class);
-		maintenanceRecord = this.repository.findMaintenanceRecordById(id);
-		boolean status = maintenanceRecord.getTechnician().getUserAccount().getId() == technicianId && super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
+		if (super.getRequest().hasData("id", int.class)) {
+			maintenanceRecordId = super.getRequest().getData("id", int.class);
+			maintenanceRecord = this.repository.findMaintenanceRecordById(maintenanceRecordId);
 
-		super.getResponse().setAuthorised(status);
+			if (maintenanceRecord != null) {
+				Technician technician = maintenanceRecord.getTechnician();
+				isDraft = maintenanceRecord.isDraftMode();
+				isTechnician = super.getRequest().getPrincipal().hasRealm(technician);
+
+				status = isDraft && isTechnician;
+			}
+		}
+
+		if (super.getRequest().hasData("aircraft", int.class)) {
+			aircraftId = super.getRequest().getData("aircraft", int.class);
+			aircraft = this.repository.findAircraftById(aircraftId);
+
+			if (aircraft == null && aircraftId != 0)
+				statusAircraft = false;
+		}
+
+		super.getResponse().setAuthorised(status && statusAircraft);
 	}
 
 	@Override
 	public void load() {
 		MaintenanceRecord maintenanceRecord;
-		int id;
+		int maintenanceRecordId;
 
-		id = super.getRequest().getData("id", int.class);
-		maintenanceRecord = this.repository.findMaintenanceRecordById(id);
+		maintenanceRecordId = super.getRequest().getData("id", int.class);
+		maintenanceRecord = this.repository.findMaintenanceRecordById(maintenanceRecordId);
 
 		super.getBuffer().addData(maintenanceRecord);
 	}
@@ -53,55 +75,56 @@ public class TechnicianMaintenanceRecordPublishService extends AbstractGuiServic
 	@Override
 	public void bind(final MaintenanceRecord maintenanceRecord) {
 
-		super.bindObject(maintenanceRecord, "aircraft", "maintenanceMoment", "nextInspection", "status", "estimatedCost", "notes");
+		int aircraftId;
+		Aircraft aircraft;
+
+		aircraftId = super.getRequest().getData("aircraft", int.class);
+		aircraft = this.repository.findAircraftById(aircraftId);
+
+		super.bindObject(maintenanceRecord, "maintenanceMoment", "status", "nextInspection", "estimatedCost", "notes");
+		maintenanceRecord.setAircraft(aircraft);
 	}
 
 	@Override
 	public void validate(final MaintenanceRecord maintenanceRecord) {
-		{
-			boolean status;
-			status = maintenanceRecord.getStatus().equals(MaintenanceStatus.COMPLETED);
 
-			super.state(status, "status", "technician.maintenance-record.publish.status");
-		}
+		Collection<Task> tasks = this.repository.findTasksByMaintenanceRecordId(maintenanceRecord.getId());
+
+		super.state(!tasks.isEmpty(), "*", "technician.maintenance-record.form.error.zero-tasks");
+
+		boolean hasUnpublishedTask = tasks.stream().anyMatch(Task::isDraftMode);
+		super.state(!hasUnpublishedTask, "*", "technician.maintenance-record.form.error.not-all-tasks-published");
+		if (maintenanceRecord.getStatus() != null)
+			super.state(maintenanceRecord.getStatus().equals(MaintenanceStatus.COMPLETED), "status", "technician.maintenance-record.form.error.not-completed-status");
 
 	}
 
 	@Override
 	public void perform(final MaintenanceRecord maintenanceRecord) {
-		MaintenanceRecord mr = this.repository.findMaintenanceRecordById(maintenanceRecord.getId());
-		mr.setMaintenanceMoment(maintenanceRecord.getMaintenanceMoment());
-		mr.setStatus(maintenanceRecord.getStatus());
-		mr.setNextInspection(maintenanceRecord.getNextInspection());
-		mr.setEstimatedCost(maintenanceRecord.getEstimatedCost());
-		mr.setNotes(maintenanceRecord.getNotes());
-		mr.setDraftMode(false);
-		mr.setTechnician(maintenanceRecord.getTechnician());
-		mr.setAircraft(maintenanceRecord.getAircraft());
 
-		this.repository.save(mr);
+		maintenanceRecord.setDraftMode(false);
+		this.repository.save(maintenanceRecord);
+
 	}
 
 	@Override
 	public void unbind(final MaintenanceRecord maintenanceRecord) {
-		SelectChoices choices;
-		SelectChoices aircraftChoices;
-		Dataset dataset;
 		Collection<Aircraft> aircrafts;
-
-		choices = SelectChoices.from(MaintenanceStatus.class, maintenanceRecord.getStatus());
+		SelectChoices aircraftChoices;
+		SelectChoices statusChoices;
+		Dataset dataset;
 
 		aircrafts = this.repository.findAllAircrafts();
+
+		statusChoices = SelectChoices.from(MaintenanceStatus.class, maintenanceRecord.getStatus());
 		aircraftChoices = SelectChoices.from(aircrafts, "model", maintenanceRecord.getAircraft());
 
-		Collection<Task> tasksNumber = this.repository.findTasksByMaintenanceRecordId(maintenanceRecord.getId());
-		Collection<String> tasks = tasksNumber.stream().map(Task::getDescription).toList();
-
-		dataset = super.unbindObject(maintenanceRecord, "aircraft", "technician.identity.name", "maintenanceMoment", "nextInspection", "status", "estimatedCost", "notes", "draftMode");
-		dataset.put("status", choices);
-		dataset.put("tasks", tasks);
+		dataset = super.unbindObject(maintenanceRecord, "maintenanceMoment", "nextInspection", "estimatedCost", "notes", "draftMode");
+		dataset.put("technician", maintenanceRecord.getTechnician().getIdentity().getFullName());
 		dataset.put("aircraft", aircraftChoices.getSelected().getKey());
 		dataset.put("aircrafts", aircraftChoices);
+		dataset.put("status", statusChoices.getSelected().getKey());
+		dataset.put("statuses", statusChoices);
 
 		super.getResponse().addData(dataset);
 	}
