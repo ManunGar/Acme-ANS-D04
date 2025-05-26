@@ -2,6 +2,7 @@
 package acme.features.manager.legs;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -9,14 +10,18 @@ import acme.client.components.models.Dataset;
 import acme.client.components.views.SelectChoices;
 import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
+import acme.entities.ActivityLogs.ActivityLog;
 import acme.entities.Aircrafts.Aircraft;
 import acme.entities.Aircrafts.AircraftRepository;
 import acme.entities.Airports.Airport;
 import acme.entities.Airports.AirportRepository;
 import acme.entities.Flight.Flight;
 import acme.entities.Flight.FlightRepository;
+import acme.entities.FlightAssignments.FlightAssignment;
 import acme.entities.Legs.Legs;
 import acme.entities.Legs.LegsStatus;
+import acme.features.flightCrewMember.flightAssignment.FlightCrewMemberFlightAssignmentRepository;
+import acme.features.manager.ManagerFlightRepository;
 import acme.realms.AirlineManager;
 
 @GuiService
@@ -25,16 +30,22 @@ public class ManagerLegsDeleteService extends AbstractGuiService<AirlineManager,
 	// Internal state ---------------------------------------------------------
 
 	@Autowired
-	private ManagerLegsRepository	repository;
+	private ManagerLegsRepository						repository;
 
 	@Autowired
-	private FlightRepository		flightRepository;
+	private FlightRepository							flightRepository;
 
 	@Autowired
-	private AirportRepository		airportRepository;
+	private ManagerFlightRepository						managerFlightRepository;
 
 	@Autowired
-	private AircraftRepository		aircraftRepository;
+	private AirportRepository							airportRepository;
+
+	@Autowired
+	private AircraftRepository							aircraftRepository;
+
+	@Autowired
+	private FlightCrewMemberFlightAssignmentRepository	flightAssignmentRepository;
 
 	// AbstractGuiService interface -------------------------------------------
 
@@ -77,6 +88,10 @@ public class ManagerLegsDeleteService extends AbstractGuiService<AirlineManager,
 
 	@Override
 	public void perform(final Legs leg) {
+		List<FlightAssignment> flightAssigments = (List<FlightAssignment>) this.flightAssignmentRepository.findAssignmentsByFlightId(leg.getFlight().getId());
+		List<ActivityLog> logs = (List<ActivityLog>) this.managerFlightRepository.findActivityLogsByFlightId(leg.getFlight().getId());
+		this.repository.deleteAll(logs);
+		this.repository.deleteAll(flightAssigments);
 		this.repository.delete(leg);
 	}
 

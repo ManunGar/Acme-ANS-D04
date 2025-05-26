@@ -22,7 +22,10 @@ public class ManagerFlightCreateService extends AbstractGuiService<AirlineManage
 
 	@Override
 	public void authorise() {
-		super.getResponse().setAuthorised(true);
+		int userId;
+		boolean autorhorise;
+		autorhorise = super.getRequest().getPrincipal().hasRealmOfType(AirlineManager.class);
+		super.getResponse().setAuthorised(autorhorise);
 	}
 
 	@Override

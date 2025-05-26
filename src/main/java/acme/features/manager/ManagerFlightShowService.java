@@ -52,7 +52,7 @@ public class ManagerFlightShowService extends AbstractGuiService<AirlineManager,
 		dataset.put("departure", flight.getDeparture());
 		dataset.put("arrival", flight.getArrival());
 		dataset.put("origin", flight.getOrigin());
-		dataset.put("destination", flight.getArrival());
+		dataset.put("destination", flight.getDestination());
 		dataset.put("layovers", flight.getLayovers());
 		dataset.put("flightId", flight.getId());
 		super.getResponse().addData(dataset);
