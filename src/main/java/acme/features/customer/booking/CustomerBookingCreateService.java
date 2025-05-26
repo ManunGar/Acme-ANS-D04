@@ -40,26 +40,30 @@ public class CustomerBookingCreateService extends AbstractGuiService<Customer, B
 		boolean isFlightInList = true;
 		Flight flight;
 
-		if (super.getRequest().hasData("id")) {
-			int flightId = super.getRequest().getData("flight", int.class);
-			Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
+		try {
+			if (super.getRequest().hasData("id")) {
+				int flightId = super.getRequest().getData("flight", int.class);
+				Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
 
-			if (flightId != 0) {
-				flight = this.flightRepository.findFlightById(flightId);
-				isFlightInList = flights.contains(flight);
+				if (flightId != 0) {
+					flight = this.flightRepository.findFlightById(flightId);
+					isFlightInList = flights.contains(flight);
+
+				}
 
 			}
 
-		}
-
-		if (super.getRequest().hasData("travelClass", String.class)) {
-			String travelClassData = super.getRequest().getData("travelClass", String.class);
-			if (!"0".equals(travelClassData))
-				try {
-					TravelClass.valueOf(travelClassData);
-				} catch (IllegalArgumentException e) {
-					travelClass = false;
-				}
+			if (super.getRequest().hasData("travelClass", String.class)) {
+				String travelClassData = super.getRequest().getData("travelClass", String.class);
+				if (!"0".equals(travelClassData))
+					try {
+						TravelClass.valueOf(travelClassData);
+					} catch (IllegalArgumentException e) {
+						travelClass = false;
+					}
+			}
+		} catch (Throwable E) {
+			isFlightInList = false;
 		}
 
 		super.getResponse().setAuthorised(isCustomer && isFlightInList && travelClass);

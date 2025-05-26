@@ -28,13 +28,20 @@ public class AdministratorAircraftEnableService extends AbstractGuiService<Admin
 	public void authorise() {
 		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
 
-		Collection<Integer> aircraftsId = this.repository.findAllAircraftId();
+		try {
 
-		if (super.getRequest().hasData("id", int.class)) {
-			Integer aircraftId = super.getRequest().getData("id", int.class);
+			if (super.getRequest().hasData("id")) {
 
-			if (!"0".equals(aircraftId))
-				status = status && aircraftsId.contains(aircraftId);
+				Integer airlineId = super.getRequest().getData("airline", int.class);
+
+				if (airlineId != 0) {
+					Airline airline = this.repository.findAirlineById(airlineId);
+					if (airline == null)
+						status = false;
+				}
+			}
+		} catch (Throwable E) {
+			status = false;
 		}
 
 		super.getResponse().setAuthorised(status);
@@ -54,7 +61,7 @@ public class AdministratorAircraftEnableService extends AbstractGuiService<Admin
 	@Override
 	public void bind(final Aircraft aircraft) {
 
-		super.bindObject(aircraft, "airline", "model", "registrationNumber", "capacity", "cargoWeight", "status", "details");
+		super.bindObject(aircraft, "airline", "model", "registrationNumber", "capacity", "cargoWeight", "details");
 	}
 
 	@Override

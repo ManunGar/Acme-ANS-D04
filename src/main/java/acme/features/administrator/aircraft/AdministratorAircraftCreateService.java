@@ -13,7 +13,6 @@ import acme.client.services.GuiService;
 import acme.entities.Aircrafts.Aircraft;
 import acme.entities.Aircrafts.AircraftStatus;
 import acme.entities.Airlines.Airline;
-import acme.entities.Airports.OperationalScope;
 
 @GuiService
 public class AdministratorAircraftCreateService extends AbstractGuiService<Administrator, Aircraft> {
@@ -29,25 +28,20 @@ public class AdministratorAircraftCreateService extends AbstractGuiService<Admin
 	@Override
 	public void authorise() {
 		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
+		try {
 
-		Collection<Integer> aircraftsId = this.repository.findAllAircraftId();
+			if (super.getRequest().hasData("id")) {
 
-		if (super.getRequest().hasData("id", int.class)) {
-			Integer aircraftId = super.getRequest().getData("id", int.class);
+				Integer airlineId = super.getRequest().getData("airline", int.class);
 
-			if (!"0".equals(aircraftId))
-				status = status && aircraftsId.contains(aircraftId);
-		}
-
-		if (super.getRequest().hasData("status", String.class)) {
-			String aircraftStatus = super.getRequest().getData("status", String.class);
-
-			if (!"0".equals(aircraftStatus))
-				try {
-					OperationalScope.valueOf(aircraftStatus);
-				} catch (IllegalArgumentException | NullPointerException e) {
-					status = false;
+				if (airlineId != 0) {
+					Airline airline = this.repository.findAirlineById(airlineId);
+					if (airline == null)
+						status = false;
 				}
+			}
+		} catch (Throwable E) {
+			status = false;
 		}
 
 		super.getResponse().setAuthorised(status);
@@ -76,7 +70,7 @@ public class AdministratorAircraftCreateService extends AbstractGuiService<Admin
 		airlineId = super.getRequest().getData("airline", int.class);
 		airline = this.repository.findAirlineById(airlineId);
 
-		super.bindObject(aircraft, "model", "registrationNumber", "capacity", "cargoWeight", "status", "details");
+		super.bindObject(aircraft, "model", "registrationNumber", "capacity", "cargoWeight", "details");
 		aircraft.setAirline(airline);
 	}
 
