@@ -17,5 +17,5 @@ technician.task.list.label.description = Descripción
 technician.task.list.label.priority = Prioridad
 
 technician.task.list.button.create = Crear tarea
-technician.task.list.button.link = Vincular
-technician.task.list.button.unlink = Desvincular
+technician.task.list.button.link = Vincular tarea
+technician.task.list.button.unlink = Desvincular tarea
