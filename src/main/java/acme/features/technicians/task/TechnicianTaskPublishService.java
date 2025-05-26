@@ -24,24 +24,33 @@ public class TechnicianTaskPublishService extends AbstractGuiService<Technician,
 
 	@Override
 	public void authorise() {
-		int id;
+		boolean status = false;
+		Integer taskId;
 		Task task;
-		int technicianId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
+		Technician technician;
 
-		id = super.getRequest().getData("id", int.class);
-		task = this.repository.findTaskById(id);
-		boolean status = task.getTechnician().getUserAccount().getId() == technicianId && super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
+		if (super.getRequest().hasData("id", Integer.class)) {
+			taskId = super.getRequest().getData("id", Integer.class);
+			if (taskId != null) {
+				task = this.repository.findTaskById(taskId);
+				if (task != null) {
+					technician = task.getTechnician();
+					status = task.isDraftMode() && super.getRequest().getPrincipal().hasRealm(technician);
+				}
+			}
+		}
 
 		super.getResponse().setAuthorised(status);
+
 	}
 
 	@Override
 	public void load() {
+		int taskId;
 		Task task;
-		int id;
 
-		id = super.getRequest().getData("id", int.class);
-		task = this.repository.findTaskById(id);
+		taskId = super.getRequest().getData("id", int.class);
+		task = this.repository.findTaskById(taskId);
 
 		super.getBuffer().addData(task);
 	}
@@ -49,27 +58,23 @@ public class TechnicianTaskPublishService extends AbstractGuiService<Technician,
 	@Override
 	public void bind(final Task task) {
 
+		Technician technician = (Technician) super.getRequest().getPrincipal().getActiveRealm();
+
 		super.bindObject(task, "type", "description", "priority", "estimatedDuration");
+
+		task.setTechnician(technician);
 	}
 
 	@Override
 	public void validate(final Task task) {
 		;
-
 	}
 
 	@Override
 	public void perform(final Task task) {
 
-		Task t = this.repository.findTaskById(task.getId());
-		t.setType(task.getType());
-		t.setDescription(task.getDescription());
-		t.setPriority(task.getPriority());
-		t.setEstimatedDuration(task.getEstimatedDuration());
-		t.setDraftMode(false);
-		t.setTechnician(task.getTechnician());
-
-		this.repository.save(t);
+		task.setDraftMode(false);
+		this.repository.save(task);
 	}
 
 	@Override
@@ -79,8 +84,10 @@ public class TechnicianTaskPublishService extends AbstractGuiService<Technician,
 
 		choices = SelectChoices.from(TaskType.class, task.getType());
 
-		dataset = super.unbindObject(task, "technician.identity.name", "type", "description", "priority", "estimatedDuration", "draftMode");
-		dataset.put("type", choices);
+		dataset = super.unbindObject(task, "type", "description", "priority", "estimatedDuration", "draftMode");
+		dataset.put("technician", task.getTechnician().getIdentity().getFullName());
+		dataset.put("type", choices.getSelected().getKey());
+		dataset.put("types", choices);
 
 		super.getResponse().addData(dataset);
 	}

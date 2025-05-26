@@ -8,15 +8,20 @@
 # purposes.  The copyright owner does not offer any warranties or representations, nor do
 # they accept any liabilities with respect to them.
 
-technician.maintenance-record-task.list.title = List of maintenance record related to tasks
-technician.maintenance-record-task.form.title = Create a maintenance record related to a task
+technician.maintenance-record-task.form.title = Link task to Maintenance Record
+technician.maintenance-record-task.list.title = Linked tasks list
 
+technician.maintenance-record-task.form.label.task = Task:
+technician.maintenance-record-task.form.label.aircraft = Aircraft associated:
+
+
+technician.maintenance-record-task.form.button.link = Link
+technician.maintenance-record-task.form.button.unlink = Unlink
+
+
+technician.maintenance-record-task.list.label.maintenanceRecord = Maintenance record
 technician.maintenance-record-task.list.label.task = Task
-technician.maintenance-record-task.list.label.maintenance-record = Maintenance Record
 
-technician.maintenance-record-task.form.button.create = Relate task to a record
+technician.maintenance-record-task.list.button.create = Create
 
-
-acme.validation.confirmation.message.maintenance-record-task.create = That relation is already created
-acme.validation.confirmation.message.maintenance-record-task.create.maintenance-record = The maintenance record must not be null
-acme.validation.confirmation.message.maintenance-record-task.create.task = The task must not be null
+technician.maintenance-record-task.form.error.no-task-to-unlink = May not be null  

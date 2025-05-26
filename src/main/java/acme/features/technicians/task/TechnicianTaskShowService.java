@@ -1,8 +1,6 @@
 
 package acme.features.technicians.task;
 
-import java.util.Collection;
-
 import org.springframework.beans.factory.annotation.Autowired;
 
 import acme.client.components.models.Dataset;
@@ -26,21 +24,26 @@ public class TechnicianTaskShowService extends AbstractGuiService<Technician, Ta
 
 	@Override
 	public void authorise() {
+
 		boolean status;
-		int technicianId;
-		Collection<Task> task;
+		int masterId;
+		Task task;
+		Technician technician;
 
-		technicianId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
-		task = this.repository.findTasksByTechnicianId(technicianId);
-		status = task.stream().allMatch(mr -> mr.getTechnician().getUserAccount().getId() == technicianId) && super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
-
+		status = super.getRequest().hasData("id", int.class);
+		if (status) {
+			masterId = super.getRequest().getData("id", int.class);
+			task = this.repository.findTaskById(masterId);
+			technician = task == null ? null : task.getTechnician();
+			status = task != null && (super.getRequest().getPrincipal().hasRealm(technician) || !task.isDraftMode());
+		}
 		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
 	public void load() {
-		int id;
 		Task task;
+		int id;
 
 		id = super.getRequest().getData("id", int.class);
 		task = this.repository.findTaskById(id);
@@ -49,21 +52,15 @@ public class TechnicianTaskShowService extends AbstractGuiService<Technician, Ta
 	}
 
 	@Override
-	public void unbind(final Task Task) {
-		SelectChoices choices;
-		SelectChoices technicianChoices;
+	public void unbind(final Task task) {
 		Dataset dataset;
-		Collection<Technician> technicians;
+		SelectChoices choices;
 
-		choices = SelectChoices.from(TaskType.class, Task.getType());
+		choices = SelectChoices.from(TaskType.class, task.getType());
 
-		technicians = this.repository.findAllTechnicians();
-		technicianChoices = SelectChoices.from(technicians, "licenseNumber", Task.getTechnician());
-
-		dataset = super.unbindObject(Task, "technician.identity.name", "type", "description", "priority", "estimatedDuration", "draftMode");
-		dataset.put("type", choices);
-		dataset.put("technician", technicianChoices.getSelected().getKey());
-		dataset.put("technicians", technicianChoices);
+		dataset = super.unbindObject(task, "description", "priority", "estimatedDuration", "draftMode");
+		dataset.put("types", choices);
+		dataset.put("type", choices.getSelected().getKey());
 
 		super.getResponse().addData(dataset);
 	}

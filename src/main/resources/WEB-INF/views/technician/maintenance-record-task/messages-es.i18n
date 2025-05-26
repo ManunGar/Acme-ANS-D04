@@ -8,14 +8,19 @@
 # purposes.  The copyright owner does not offer any warranties or representations, nor do
 # they accept any liabilities with respect to them.
 
-technician.maintenance-record-task.list.title = Lista de registros de mantenimiento asiciados a tareas
-technician.maintenance-record-task.form.title = Crear un registro de mantenimiento asiciado a una tarea
+technician.involves.form.title = Vincular tarea a Registro
+technician.involves.list.title = Lista de tareas vinculadas
 
-technician.maintenance-record-task.list.label.task = Tarea
-technician.maintenance-record-task.list.label.maintenance-record = Registro de mantenimiento
+technician.involves.form.label.task = Tarea:
+technician.involves.form.label.aircraft = Avión asociado:
 
-technician.maintenance-record-task.form.button.create = Asociar una tarea a un registro
 
-acme.validation.confirmation.message.maintenance-record-task.create = Esa relacion ya está creada
-acme.validation.confirmation.message.maintenance-record-task.create.maintenance-record = El registro de mantenimiento no puede ser nula
-acme.validation.confirmation.message.maintenance-record-task.create.task = La tarea no puede ser nula
+technician.involves.form.button.link = Vincular
+technician.involves.form.button.unlink = Desvincular
+
+technician.involves.list.label.maintenanceRecord = Registro de mantenimiento
+technician.involves.list.label.task = Tarea
+
+technician.involves.list.button.create = Crear
+
+technician.involves.form.error.no-task-to-unlink = No puede ser nulo  

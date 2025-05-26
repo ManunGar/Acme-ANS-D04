@@ -35,55 +35,92 @@ public class TechnicianMaintenanceRecordTaskCreateService extends AbstractGuiSer
 
 	@Override
 	public void authorise() {
-		boolean isTechnician = super.getRequest().getPrincipal().hasRealmOfType(Technician.class);
-		super.getResponse().setAuthorised(isTechnician);
+
+		boolean statusTask = true;
+		boolean status = false;
+		int taskId;
+		Task task;
+		int maintenanceRecordId;
+		MaintenanceRecord maintenanceRecord;
+		Technician technician;
+		Collection<Task> tasks;
+
+		technician = (Technician) super.getRequest().getPrincipal().getActiveRealm();
+		maintenanceRecordId = super.getRequest().getData("maintenanceRecordId", int.class);
+		maintenanceRecord = this.maintenanceRecordRepository.findMaintenanceRecordById(maintenanceRecordId);
+
+		tasks = this.taskRepository.findValidTasksToLink(maintenanceRecord, technician);
+
+		if (super.getRequest().hasData("task", int.class)) {
+			taskId = super.getRequest().getData("task", int.class);
+			task = this.taskRepository.findTaskById(taskId);
+
+			if (!tasks.contains(task) && taskId != 0)
+				statusTask = false;
+		}
+
+		status = maintenanceRecord != null && maintenanceRecord.isDraftMode() && super.getRequest().getPrincipal().hasRealm(maintenanceRecord.getTechnician());
+
+		super.getResponse().setAuthorised(status && statusTask);
 	}
 
 	@Override
 	public void load() {
-		MaintenanceRecordTask maintenanceRecordTask;
+		MaintenanceRecordTask mrTask;
+		Integer maintenanceRecordId;
+		MaintenanceRecord maintenanceRecord;
 
-		maintenanceRecordTask = new MaintenanceRecordTask();
+		maintenanceRecordId = super.getRequest().getData("maintenanceRecordId", int.class);
+		maintenanceRecord = this.maintenanceRecordRepository.findMaintenanceRecordById(maintenanceRecordId);
 
-		super.getBuffer().addData(maintenanceRecordTask);
+		mrTask = new MaintenanceRecordTask();
+		mrTask.setMaintenanceRecord(maintenanceRecord);
+		super.getBuffer().addData(mrTask);
+
 	}
 
 	@Override
-	public void bind(final MaintenanceRecordTask maintenanceRecordTask) {
+	public void bind(final MaintenanceRecordTask mrTask) {
 
-		super.bindObject(maintenanceRecordTask, "task", "maintenanceRecord");
+		super.bindObject(mrTask, "task");
 
 	}
 
 	@Override
-	public void validate(final MaintenanceRecordTask maintenanceRecordTask) {
-
+	public void validate(final MaintenanceRecordTask mrTask) {
 		;
 	}
 
 	@Override
-	public void perform(final MaintenanceRecordTask maintenanceRecordTask) {
-		this.repository.save(maintenanceRecordTask);
+	public void perform(final MaintenanceRecordTask mrTask) {
+
+		this.repository.save(mrTask);
+
 	}
 
 	@Override
-	public void unbind(final MaintenanceRecordTask maintenanceRecordTask) {
+	public void unbind(final MaintenanceRecordTask mrTask) {
+		Technician technician;
+		Collection<Task> tasks;
+		int maintenanceRecordId;
+		MaintenanceRecord maintenanceRecord;
+		SelectChoices choices;
 		Dataset dataset;
-		SelectChoices taskChoices;
-		SelectChoices maintenanceRecordChoices;
 
-		int technicianId = super.getRequest().getPrincipal().getActiveRealm().getId();
-		Collection<MaintenanceRecord> maintenanceRecords = this.maintenanceRecordRepository.findMaintenanceRecordsByTechnicianId(technicianId);
-		Collection<Task> tasks = this.taskRepository.findPublishedTasks();
-		maintenanceRecordChoices = SelectChoices.from(maintenanceRecords, "id", maintenanceRecordTask.getMaintenanceRecord());
-		taskChoices = SelectChoices.from(tasks, "description", maintenanceRecordTask.getTask());
+		technician = (Technician) super.getRequest().getPrincipal().getActiveRealm();
+		maintenanceRecordId = super.getRequest().getData("maintenanceRecordId", int.class);
+		maintenanceRecord = this.maintenanceRecordRepository.findMaintenanceRecordById(maintenanceRecordId);
 
-		dataset = super.unbindObject(maintenanceRecordTask);
-		dataset.put("maintenanceRecord", maintenanceRecordChoices.getSelected().getKey());
-		dataset.put("maintenanceRecords", maintenanceRecordChoices);
-		dataset.put("task", taskChoices.getSelected().getKey());
-		dataset.put("tasks", taskChoices);
+		tasks = this.taskRepository.findValidTasksToLink(maintenanceRecord, technician);
+		choices = SelectChoices.from(tasks, "description", mrTask.getTask());
+
+		dataset = super.unbindObject(mrTask, "maintenanceRecord");
+		dataset.put("maintenanceRecordId", mrTask.getMaintenanceRecord().getId());
+		dataset.put("task", choices.getSelected().getKey());
+		dataset.put("tasks", choices);
+		dataset.put("aircraftRegistrationNumber", mrTask.getMaintenanceRecord().getAircraft().getRegistrationNumber());
 
 		super.getResponse().addData(dataset);
+
 	}
 }

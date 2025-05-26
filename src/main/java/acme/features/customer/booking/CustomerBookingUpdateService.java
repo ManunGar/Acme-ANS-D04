@@ -43,28 +43,33 @@ public class CustomerBookingUpdateService extends AbstractGuiService<Customer, B
 		booking = this.repository.findBookingById(id);
 		status = booking.getCustomer().getUserAccount().getId() == customerId;
 
-		if (booking.isDraftMode() != false && status && isCustomer) {
+		try {
 
-			Date today = MomentHelper.getCurrentMoment();
-			Integer flightId = super.getRequest().getData("flight", int.class);
-			Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
-			Flight flight;
+			if (booking.isDraftMode() != false && status && isCustomer) {
 
-			if (flightId != 0) {
-				flight = this.flightRepository.findFlightById(flightId);
-				isFlightInList = flights.contains(flight);
+				Date today = MomentHelper.getCurrentMoment();
+				Integer flightId = super.getRequest().getData("flight", int.class);
+				Collection<Flight> flights = this.repository.findAllPublishedFlightsWithFutureDeparture(today);
+				Flight flight;
+
+				if (flightId != 0) {
+					flight = this.flightRepository.findFlightById(flightId);
+					isFlightInList = flights.contains(flight);
+				}
+
 			}
 
-		}
-
-		if (super.getRequest().hasData("travelClass", String.class)) {
-			String travelClassData = super.getRequest().getData("travelClass", String.class);
-			if (!"0".equals(travelClassData))
-				try {
-					TravelClass.valueOf(travelClassData);
-				} catch (IllegalArgumentException e) {
-					travelClass = false;
-				}
+			if (super.getRequest().hasData("travelClass", String.class)) {
+				String travelClassData = super.getRequest().getData("travelClass", String.class);
+				if (!"0".equals(travelClassData))
+					try {
+						TravelClass.valueOf(travelClassData);
+					} catch (IllegalArgumentException e) {
+						travelClass = false;
+					}
+			}
+		} catch (Throwable E) {
+			isFlightInList = false;
 		}
 
 		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList && isCustomer && travelClass);
@@ -89,6 +94,7 @@ public class CustomerBookingUpdateService extends AbstractGuiService<Customer, B
 
 	@Override
 	public void validate(final Booking booking) {
+
 		;
 
 	}

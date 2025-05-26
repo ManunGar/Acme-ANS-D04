@@ -61,8 +61,19 @@ master.menu.passenger = Pasajeros
 
 # master.menu.technician ##########################################################
 
-master.menu.technnician = Registros de mantenimiento
-master.menu.task = Tareas
+master.menu.technician = Técnico
+
+# master.menu.task ##########################################################
+
+master.menu.task = Tasks
+master.menu.task.list-my-tasks = Listar mis tareas
+master.menu.task.list-published-tasks = Listar tareas publicadas
+
+# master.menu.maintenance-record ##########################################################
+
+master.menu.maintenance-record = Maintenance Records
+master.menu.maintenance-record.list-my-maintenance-records= Listar mis registros de mantenimiento
+master.menu.maintenance-record.list-published-maintenance-records = Listar registros de mantenimiento publicados
 
 # master.menu.user-account ####################################################
 
