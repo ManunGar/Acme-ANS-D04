@@ -23,8 +23,9 @@ public class AdministratorAirportCreateService extends AbstractGuiService<Admini
 
 	@Override
 	public void authorise() {
-		boolean isAdministrator = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
-		super.getResponse().setAuthorised(isAdministrator);
+		boolean status = super.getRequest().getPrincipal().hasRealmOfType(Administrator.class);
+
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class AdministratorAirportCreateService extends AbstractGuiService<Admini
 
 	@Override
 	public void bind(final Airport airport) {
-		super.bindObject(airport, "name", "IATAcode", "city", "country", "website", "email", "contactPhoneNumber");
+		super.bindObject(airport, "name", "IATAcode", "city", "country", "website", "email", "contactPhoneNumber", "operationalScope");
 	}
 
 	@Override
@@ -55,9 +56,13 @@ public class AdministratorAirportCreateService extends AbstractGuiService<Admini
 		confirmation = super.getRequest().getData("confirmation", boolean.class);
 		super.state(confirmation, "confirmation", "acme.validation.confirmation.message");
 
-		Airport a = this.repository.findAirportByIataCode(airport.getIATAcode());
-		if (a != null)
+		Airport iataCode = this.repository.findAirportByIataCode(airport.getIATAcode());
+		if (iataCode != null)
 			super.state(false, "IATAcode", "acme.validation.confirmation.message.aiport.IATAcode");
+
+		Airport email = this.repository.findAirportByEmail(airport.getEmail());
+		if (email != null)
+			super.state(false, "email", "acme.validation.confirmation.message.aiport.email");
 	}
 
 	@Override

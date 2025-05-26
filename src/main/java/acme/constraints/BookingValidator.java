@@ -18,10 +18,15 @@ public class BookingValidator extends AbstractValidator<ValidBooking, Booking> {
 
 
 	@Override
+	protected void initialise(final ValidBooking annotation) {
+		assert annotation != null;
+	}
+
+	@Override
 	public boolean isValid(final Booking booking, final ConstraintValidatorContext context) {
 		boolean result;
 
-		if (booking.getLocatorCode() == null || !booking.getLocatorCode().matches("^[A-Z0-9]{6,8}$"))
+		if (!booking.getLocatorCode().matches("^[A-Z0-9]{6,8}$"))
 			super.state(context, false, "locatorCode", "acme.validation.confirmation.message.booking.locator-code.pattern");
 		else {
 			Booking b = this.repository.findBookingByLocatorCode(booking.getLocatorCode());
