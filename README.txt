@@ -8,11 +8,7 @@
 # purposes.  The copyright owner does not offer any warranties or representations, nor do
 # they accept any liabilities with respect to them.
 
-This project is developed by group C1.023, it is part of the "Design and Testing II" course at the University of Seville. 
-It is an educational software initiative aimed at supporting airport operations by providing tools that facilitate the coordination 
-and management of various logistical tasks. The project focuses on enhancing processes such as flight scheduling, crew assignments, 
-booking systems, and maintenance tracking. Developed within an academic context, it not only serves as a practical solution for 
-improving airport efficiency but also as a learning platform for students to apply software engineering principles in real-world scenarios.
+It is an educational software initiative aimed at supporting airport operations by providing tools that facilitate the coordination and management of various logistical tasks. The project focuses on enhancing processes such as flight scheduling, crew assignments, booking systems, and maintenance tracking. Developed within an academic context, it not only serves as a practical solution for improving airport efficiency but also as a learning platform for students to apply software engineering principles in real-world scenarios.
 
 **Planning Dashboard:**
 
