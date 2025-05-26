@@ -10,6 +10,7 @@ import acme.client.services.AbstractGuiService;
 import acme.client.services.GuiService;
 import acme.entities.Airlines.Airline;
 import acme.entities.Airlines.Type;
+import acme.entities.Airports.OperationalScope;
 
 @GuiService
 public class AdministratorAirlineUpdateService extends AbstractGuiService<Administrator, Airline> {

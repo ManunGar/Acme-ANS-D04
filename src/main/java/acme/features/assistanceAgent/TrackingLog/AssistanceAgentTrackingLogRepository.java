@@ -48,6 +48,14 @@ public interface AssistanceAgentTrackingLogRepository extends AbstractRepository
 	boolean isDraftTrackingLogOwnedByAgent(@Param("trackingLogId") int trackingLogId, @Param("agentId") int agentId);
 
 	@Query("""
+			SELECT COUNT(c) > 0
+			FROM Claim c
+			WHERE c.id = :claimId
+			AND c.assistanceAgent.id = :agentId
+		""")
+	boolean isClaimOwnedByAgent(@Param("claimId") int claimId, @Param("agentId") int agentId);
+
+	@Query("""
 			SELECT COUNT(t) > 0
 			FROM TrackingLog t
 			WHERE t.id = :trackingLogId

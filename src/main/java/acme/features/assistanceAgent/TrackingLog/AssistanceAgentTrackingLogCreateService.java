@@ -22,7 +22,19 @@ public class AssistanceAgentTrackingLogCreateService extends AbstractGuiService<
 
 	@Override
 	public void authorise() {
-		super.getResponse().setAuthorised(true);
+		boolean status = true;
+		if (super.getRequest().hasData("accepted", String.class)) {
+			String accepted = super.getRequest().getData("accepted", String.class);
+
+			if (!"0".equals(accepted))
+				try {
+					AcceptedIndicator.valueOf(accepted);
+				} catch (IllegalArgumentException | NullPointerException e) {
+					status = false;
+				}
+		}
+
+		super.getResponse().setAuthorised(status);
 	}
 
 	@Override
@@ -46,12 +58,7 @@ public class AssistanceAgentTrackingLogCreateService extends AbstractGuiService<
 	@Override
 	public void bind(final TrackingLog trackingLog) {
 
-		AcceptedIndicator accepted;
-		accepted = super.getRequest().getData("accepted", AcceptedIndicator.class);
-		accepted = accepted == null ? AcceptedIndicator.PENDING : accepted;
-
-		super.bindObject(trackingLog, "step", "resolutionPercentage", "resolution", "secondTrackingLog");
-		trackingLog.setAccepted(accepted);
+		super.bindObject(trackingLog, "step", "resolutionPercentage", "resolution", "accepted", "secondTrackingLog");
 		trackingLog.setLastUpdateMoment(MomentHelper.getCurrentMoment());
 		trackingLog.setCreatedMoment(MomentHelper.getCurrentMoment());
 

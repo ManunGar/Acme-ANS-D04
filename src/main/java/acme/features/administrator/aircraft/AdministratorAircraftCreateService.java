@@ -13,6 +13,7 @@ import acme.client.services.GuiService;
 import acme.entities.Aircrafts.Aircraft;
 import acme.entities.Aircrafts.AircraftStatus;
 import acme.entities.Airlines.Airline;
+import acme.entities.Airports.OperationalScope;
 
 @GuiService
 public class AdministratorAircraftCreateService extends AbstractGuiService<Administrator, Aircraft> {
@@ -42,6 +43,7 @@ public class AdministratorAircraftCreateService extends AbstractGuiService<Admin
 			}
 		} catch (Throwable E) {
 			status = false;
+
 		}
 
 		super.getResponse().setAuthorised(status);
