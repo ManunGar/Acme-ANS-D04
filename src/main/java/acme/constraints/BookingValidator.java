@@ -18,11 +18,6 @@ public class BookingValidator extends AbstractValidator<ValidBooking, Booking> {
 
 
 	@Override
-	protected void initialise(final ValidBooking annotation) {
-		assert annotation != null;
-	}
-
-	@Override
 	public boolean isValid(final Booking booking, final ConstraintValidatorContext context) {
 		boolean result;
 
