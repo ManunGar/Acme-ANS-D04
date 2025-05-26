@@ -38,17 +38,20 @@ public class CustomerBookingPublishService extends AbstractGuiService<Customer, 
 	@Override
 	public void authorise() {
 		int id;
-		Booking booking;
+
 		boolean isFlightInList = true;
 		boolean status = true;
 		boolean travelClass = true;
+		boolean isIndDraftMode = false;
 		boolean isCustomer = super.getRequest().getPrincipal().hasRealmOfType(Customer.class);
 		int customerId = super.getRequest().getPrincipal().getActiveRealm().getUserAccount().getId();
-		id = super.getRequest().getData("id", int.class);
-		booking = this.repository.findBookingById(id);
-		status = booking.getCustomer().getUserAccount().getId() == customerId;
 
 		try {
+			Booking booking;
+			id = super.getRequest().getData("id", int.class);
+			booking = this.repository.findBookingById(id);
+			status = booking.getCustomer().getUserAccount().getId() == customerId;
+			isIndDraftMode = booking.isDraftMode() == true;
 			if (booking.isDraftMode() != false && status && isCustomer) {
 
 				Date today = MomentHelper.getCurrentMoment();
@@ -68,7 +71,7 @@ public class CustomerBookingPublishService extends AbstractGuiService<Customer, 
 				if (!"0".equals(travelClassData))
 					try {
 						TravelClass.valueOf(travelClassData);
-					} catch (IllegalArgumentException | NullPointerException e) {
+					} catch (IllegalArgumentException e) {
 						travelClass = false;
 					}
 			}
@@ -76,7 +79,7 @@ public class CustomerBookingPublishService extends AbstractGuiService<Customer, 
 			isFlightInList = false;
 		}
 
-		super.getResponse().setAuthorised(status && booking.isDraftMode() && isFlightInList && isCustomer && travelClass);
+		super.getResponse().setAuthorised(status && isIndDraftMode && isFlightInList && isCustomer && travelClass);
 	}
 
 	@Override
